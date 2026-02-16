@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function Contact() {
   const [name, setName] = useState("");
+  const [info, setInfo] = useState("");
 
   return (
     <div className="max-w-xl mx-auto mt-10">
@@ -11,11 +12,19 @@ export default function Contact() {
         <h2 className="text-2xl font-semibold mb-6">Contact Us</h2>
 
         <form className="flex flex-col gap-4">
+            <p>Enter your name</p>
           <input
             className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+          <p>Enter your Discrimination</p>
+          <input
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Your Name"
+            value={info}
+            onChange={(e) => setInfo(e.target.value)}
           />
 
           <button

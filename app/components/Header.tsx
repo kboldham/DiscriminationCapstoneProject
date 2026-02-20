@@ -11,17 +11,17 @@ export default function Header() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex items-center space-x-8 text-sm font-medium">
-          <Link href="/" className="hover:text-blue-400 transition-colors">
+        <nav className="flex items-center gap-4">
+          <Link href="/" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
             Home
           </Link>
-          <Link href="/educate" className="hover:text-blue-400 transition-colors">
-            Learn More
-          </Link>
-          <Link href="/report" className="hover:text-blue-400 transition-colors">
+          <Link href="/report" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
             Report
           </Link>
-          <Link href="/about" className="hover:text-blue-400 transition-colors">
+          <Link href="/educate" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+            Learn More
+          </Link>
+          <Link href="/about" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
             About Us
           </Link>
         </nav>

@@ -10,6 +10,7 @@ export default function Contact() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isEstimatedTime, setIsEstimatedTime] = useState(false);
+  const [personsInvolved, setPersonsInvolved] = useState("");
   const [info, setInfo] = useState("");
   const [error, setError] = useState("");
 
@@ -19,10 +20,6 @@ export default function Contact() {
     const errors = [];
 
     // Validate all fields
-    if (!name.trim()) {
-      errors.push("Full Name");
-    }
-
     if (!discriminationType) {
       errors.push("Discrimination Type");
     }
@@ -43,6 +40,10 @@ export default function Contact() {
       errors.push("Time of Incident (or check Estimated Time)");
     }
 
+    if (!personsInvolved.trim()) {
+      errors.push("Person(s) Involved");
+    }
+
     if (!info.trim()) {
       errors.push("Discrimination Details");
     }
@@ -53,7 +54,7 @@ export default function Contact() {
     }
 
     // If all validation passes, you can submit
-    console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, info });
+    console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info });
     alert("Report submitted successfully!");
     // Reset form
     setName("");
@@ -63,6 +64,7 @@ export default function Contact() {
     setDate("");
     setTime("");
     setIsEstimatedTime(false);
+    setPersonsInvolved("");
     setInfo("");
   };
 
@@ -71,6 +73,11 @@ export default function Contact() {
       <div className="border rounded-xl shadow-lg p-8 bg-white">
         <h2 className="text-2xl font-semibold mb-6">Report Discrimination</h2>
 
+        <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded mb-6">
+          <p className="font-extrabold text-2xl">Anonymous Reporting is Welcome!</p>
+          <p className="text-base font-semibold">If you prefer to remain anonymous, simply leave the "Full Name" field blank and continue with your report. All information you provide will help us understand and address discrimination in our community.</p>
+        </div>
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -78,7 +85,7 @@ export default function Contact() {
         )}
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <p>Enter your Full Name *</p>
+            <p>Enter your Full Name (Optional)</p>
           <input
             className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Your Full Name"
@@ -144,6 +151,14 @@ export default function Contact() {
             />
             <span className="text-sm text-gray-700">I don't know the exact time (Estimated)</span>
           </label>
+
+          <p>Person(s) Involved *</p>
+          <input
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter the name(s) of the person/people involved or describe them"
+            value={personsInvolved}
+            onChange={(e) => setPersonsInvolved(e.target.value)}
+          />
 
           <p>Enter your Discrimination Details *</p>
           <textarea

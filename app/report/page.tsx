@@ -3,14 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-type ReportMode = "anonymous" | "account";
 type FollowUpPreference = "contact" | "anonymous";
 
 export default function ReportPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [reportMode, setReportMode] = useState<ReportMode>("anonymous");
   const [followUpPreference, setFollowUpPreference] = useState<FollowUpPreference>("anonymous");
   const [discriminationType, setDiscriminationType] = useState("");
   const [customType, setCustomType] = useState("");
@@ -58,8 +56,8 @@ export default function ReportPage() {
       errors.push("Discrimination Details");
     }
 
-    if (followUpPreference === "contact" && reportMode === "anonymous" && !email.trim()) {
-      errors.push("Email Address (required for follow-up when reporting anonymously)");
+    if (followUpPreference === "contact" && !email.trim()) {
+      errors.push("Email Address (required for follow-up)");
     }
 
     if (errors.length > 0) {
@@ -69,15 +67,10 @@ export default function ReportPage() {
 
     // If all validation passes, you can submit
     console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info });
-    setSuccessMessage(
-      reportMode === "anonymous"
-        ? "Your report has been submitted anonymously. Thank you for speaking up."
-        : "Your report has been submitted. You can track updates in your dashboard."
-    );
+    setSuccessMessage("Your report has been submitted. Thank you for speaking up.");
     // Reset form
     setName("");
     setEmail("");
-    setReportMode("anonymous");
     setFollowUpPreference("anonymous");
     setDiscriminationType("");
     setCustomType("");
@@ -94,40 +87,22 @@ export default function ReportPage() {
       <div className="border rounded-xl shadow-lg p-8 bg-white">
         <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
         <p className="text-gray-700 mb-6">
-          You can report discrimination anonymously or sign in to track your submission.
+          Start your report below. You can stay anonymous, or sign in if you want to track updates.
         </p>
 
-        <div className="grid gap-4 mb-6">
-          <div className={`border rounded-lg p-4 ${reportMode === "account" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}>
-            <p className="font-semibold text-lg">Sign In or Create Account</p>
-            <p className="text-sm text-gray-700 mb-3">
-              Save drafts, track status, and securely receive updates about your report.
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setReportMode("account");
-                router.push("/auth/signin?callbackUrl=/report");
-              }}
-              className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
-            >
-              Sign In / Sign Up
-            </button>
-          </div>
-
-          <div className={`border rounded-lg p-4 ${reportMode === "anonymous" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}>
-            <p className="font-semibold text-lg">Report Anonymously</p>
-            <p className="text-sm text-gray-700 mb-3">
-              Submit now without creating an account. Your identity is not required.
-            </p>
-            <button
-              type="button"
-              onClick={() => setReportMode("anonymous")}
-              className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
-            >
-              Continue Anonymously
-            </button>
-          </div>
+        <div className="border rounded-lg p-4 border-gray-200 mb-6">
+          <p className="font-semibold text-lg">Want to track your report status?</p>
+          <p className="text-sm text-gray-700 mb-3">
+            Sign in or create an account to save drafts and receive secure follow-up updates.
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/auth/signin?callbackUrl=/report")}
+            className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
+          >
+            Sign In / Sign Up
+          </button>
+          <p className="text-sm text-gray-700 mt-3">Otherwise, continue with the report form below anonymously.</p>
         </div>
 
         <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded mb-6">
@@ -165,18 +140,16 @@ export default function ReportPage() {
             onChange={(e) => setName(e.target.value)}
           />
 
-          {reportMode === "anonymous" && (
-            <>
-              <p>Email Address (Optional unless you request follow-up)</p>
-              <input
-                type="email"
-                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </>
-          )}
+          <>
+            <p>Email Address (Optional unless you request follow-up)</p>
+            <input
+              type="email"
+              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </>
 
           <p>Discrimination Type *</p>
           <select

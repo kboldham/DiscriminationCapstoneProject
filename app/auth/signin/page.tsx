@@ -13,6 +13,7 @@ function SignInContent() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,13 +56,22 @@ function SignInContent() {
           required
         />
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(event) => setShowPassword(event.target.checked)}
+            className="w-4 h-4"
+          />
+          Show password
+        </label>
         <button
           type="submit"
           className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition disabled:opacity-60"

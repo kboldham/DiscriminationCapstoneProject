@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/;
+
 function SignUpContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -15,6 +17,7 @@ function SignUpContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +27,11 @@ function SignUpContent() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    if (!passwordPattern.test(password)) {
+      setError("Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
       return;
     }
 
@@ -67,16 +75,18 @@ function SignUpContent() {
     <div className="max-w-md mx-auto mt-10 border rounded-xl shadow-lg p-8 bg-white">
       <h1 className="text-2xl font-semibold mb-2">Create Account</h1>
       <p className="text-sm text-gray-700 mb-6">Create an account to save drafts and track your report updates.</p>
+      <p className="text-sm text-gray-700 mb-4">Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.</p>
 
       {error && <p className="mb-4 text-sm text-red-700 bg-red-100 border border-red-300 rounded p-3">{error}</p>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Full Name (optional)"
+          placeholder="Full Name"
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
         />
         <input
           type="email"
@@ -87,16 +97,18 @@ function SignUpContent() {
           required
         />
         <input
-          type="password"
-          placeholder="Password (min 8 characters)"
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
+          title="Use at least 8 characters with 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
           minLength={8}
           required
         />
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
@@ -104,6 +116,15 @@ function SignUpContent() {
           minLength={8}
           required
         />
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(event) => setShowPassword(event.target.checked)}
+            className="w-4 h-4"
+          />
+          Show password fields
+        </label>
         <button
           type="submit"
           className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition disabled:opacity-60"

@@ -1,9 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Contact() {
+type ReportMode = "anonymous" | "account";
+type FollowUpPreference = "contact" | "anonymous";
+
+export default function ReportPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [reportMode, setReportMode] = useState<ReportMode>("anonymous");
+  const [followUpPreference, setFollowUpPreference] = useState<FollowUpPreference>("anonymous");
   const [discriminationType, setDiscriminationType] = useState("");
   const [customType, setCustomType] = useState("");
   const [location, setLocation] = useState("");
@@ -13,10 +21,12 @@ export default function Contact() {
   const [personsInvolved, setPersonsInvolved] = useState("");
   const [info, setInfo] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
     const errors = [];
 
     // Validate all fields
@@ -48,6 +58,10 @@ export default function Contact() {
       errors.push("Discrimination Details");
     }
 
+    if (followUpPreference === "contact" && reportMode === "anonymous" && !email.trim()) {
+      errors.push("Email Address (required for follow-up when reporting anonymously)");
+    }
+
     if (errors.length > 0) {
       setError(`Please fill out the following required fields: ${errors.join(", ")}`);
       return;
@@ -55,9 +69,16 @@ export default function Contact() {
 
     // If all validation passes, you can submit
     console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info });
-    alert("Report submitted successfully!");
+    setSuccessMessage(
+      reportMode === "anonymous"
+        ? "Your report has been submitted anonymously. Thank you for speaking up."
+        : "Your report has been submitted. You can track updates in your dashboard."
+    );
     // Reset form
     setName("");
+    setEmail("");
+    setReportMode("anonymous");
+    setFollowUpPreference("anonymous");
     setDiscriminationType("");
     setCustomType("");
     setLocation("");
@@ -71,12 +92,58 @@ export default function Contact() {
   return (
     <div className="max-w-xl mx-auto mt-10">
       <div className="border rounded-xl shadow-lg p-8 bg-white">
-        <h2 className="text-2xl font-semibold mb-6">Report Discrimination</h2>
+        <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
+        <p className="text-gray-700 mb-6">
+          You can report discrimination anonymously or sign in to track your submission.
+        </p>
+
+        <div className="grid gap-4 mb-6">
+          <div className={`border rounded-lg p-4 ${reportMode === "account" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}>
+            <p className="font-semibold text-lg">Sign In or Create Account</p>
+            <p className="text-sm text-gray-700 mb-3">
+              Save drafts, track status, and securely receive updates about your report.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setReportMode("account");
+                router.push("/auth/signin?callbackUrl=/report");
+              }}
+              className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
+            >
+              Sign In / Sign Up
+            </button>
+          </div>
+
+          <div className={`border rounded-lg p-4 ${reportMode === "anonymous" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}>
+            <p className="font-semibold text-lg">Report Anonymously</p>
+            <p className="text-sm text-gray-700 mb-3">
+              Submit now without creating an account. Your identity is not required.
+            </p>
+            <button
+              type="button"
+              onClick={() => setReportMode("anonymous")}
+              className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
+            >
+              Continue Anonymously
+            </button>
+          </div>
+        </div>
 
         <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded mb-6">
-          <p className="font-extrabold text-2xl">Anonymous Reporting is Welcome!</p>
-          <p className="text-base font-semibold">If you prefer to remain anonymous, simply leave the "Full Name" field blank and continue with your report. All information you provide will help us understand and address discrimination in our community.</p>
+          <p className="font-semibold">Your safety and privacy come first.</p>
+          <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
+            <li>Anonymous reports are accepted and reviewed.</li>
+            <li>If you choose to create an account, your information is used only for report management and follow-up.</li>
+          </ul>
         </div>
+
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <p className="font-semibold mb-1">Report Submitted</p>
+            <p>{successMessage}</p>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -85,13 +152,31 @@ export default function Contact() {
         )}
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <p>Enter your Full Name (Optional)</p>
+          <h3 className="text-xl font-semibold">Report Details</h3>
+          <p className="text-sm text-gray-700">
+            Share what happened, when it occurred, and any supporting context you’re comfortable providing.
+          </p>
+
+          <p>Enter your Full Name (Optional)</p>
           <input
             className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Your Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+
+          {reportMode === "anonymous" && (
+            <>
+              <p>Email Address (Optional unless you request follow-up)</p>
+              <input
+                type="email"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </>
+          )}
 
           <p>Discrimination Type *</p>
           <select
@@ -164,10 +249,32 @@ export default function Contact() {
           <textarea
             className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="Describe in detail what happened during the incident"
-            rows="6"
+            rows={6}
             value={info}
             onChange={(e) => setInfo(e.target.value)}
           />
+
+          <p className="font-medium">Would you like follow-up on this report?</p>
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="followUp"
+              checked={followUpPreference === "contact"}
+              onChange={() => setFollowUpPreference("contact")}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">Yes, contact me (requires email or account)</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="followUp"
+              checked={followUpPreference === "anonymous"}
+              onChange={() => setFollowUpPreference("anonymous")}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">No, keep this fully anonymous</span>
+          </label>
 
           <button
             className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition"

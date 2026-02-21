@@ -18,6 +18,7 @@ export default function ReportPage() {
   const [isEstimatedTime, setIsEstimatedTime] = useState(false);
   const [personsInvolved, setPersonsInvolved] = useState("");
   const [info, setInfo] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -66,7 +67,7 @@ export default function ReportPage() {
     }
 
     // If all validation passes, you can submit
-    console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info });
+    console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info, files: uploadedFiles?.length });
     setSuccessMessage("Your report has been submitted. Thank you for speaking up.");
     // Reset form
     setName("");
@@ -80,6 +81,7 @@ export default function ReportPage() {
     setIsEstimatedTime(false);
     setPersonsInvolved("");
     setInfo("");
+    setUploadedFiles(null);
   };
 
   return (
@@ -226,6 +228,27 @@ export default function ReportPage() {
             value={info}
             onChange={(e) => setInfo(e.target.value)}
           />
+
+          <p className="font-medium">Supporting Documents (Optional)</p>
+          <p className="text-sm text-gray-700 mb-2">
+            Upload any relevant files such as emails, photos, screenshots, contracts, or other documentation that supports your report.
+          </p>
+          <input
+            type="file"
+            multiple
+            onChange={(e) => setUploadedFiles(e.target.files)}
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+          {uploadedFiles && uploadedFiles.length > 0 && (
+            <div className="text-sm text-gray-700 mt-2">
+              <p className="font-medium mb-1">Selected files ({uploadedFiles.length}):</p>
+              <ul className="list-disc pl-5">
+                {Array.from(uploadedFiles).map((file, index) => (
+                  <li key={index}>{file.name} ({(file.size / 1024).toFixed(1)} KB)</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <p className="font-medium">Would you like follow-up on this report?</p>
           <label className="flex items-center gap-2">

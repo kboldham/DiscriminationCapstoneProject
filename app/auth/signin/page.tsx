@@ -52,7 +52,7 @@ function SignInContent() {
           placeholder="Email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <input
@@ -60,7 +60,7 @@ function SignInContent() {
           placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <label className="flex items-center gap-2 text-sm text-gray-700">
@@ -74,7 +74,7 @@ function SignInContent() {
         </label>
         <button
           type="submit"
-          className="bg-purple-600 text-white rounded-md p-3 hover:bg-purple-700 transition disabled:opacity-60"
+          className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition disabled:opacity-60"
           disabled={isLoading}
         >
           {isLoading ? "Signing in..." : "Sign In"}
@@ -83,7 +83,7 @@ function SignInContent() {
 
       <p className="text-sm text-gray-700 mt-5">
         Don&apos;t have an account?{" "}
-        <Link href={`/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-purple-700 font-medium hover:underline">
+        <Link href={`/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-blue-700 font-medium hover:underline">
           Create one
         </Link>
       </p>

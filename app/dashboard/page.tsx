@@ -16,7 +16,7 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-semibold mb-2">Dashboard</h1>
       <p className="text-gray-700 mb-6">Welcome back{session.user.name ? `, ${session.user.name}` : ""}.</p>
 
-      <div className="border rounded-lg p-4 bg-purple-50 border-purple-200 mb-6">
+      <div className="border rounded-lg p-4 bg-blue-50 border-blue-200 mb-6">
         <p className="font-semibold mb-1">Account Benefits</p>
         <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
           <li>Track your report status</li>

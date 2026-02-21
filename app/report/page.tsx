@@ -100,14 +100,14 @@ export default function ReportPage() {
           <button
             type="button"
             onClick={() => router.push("/auth/signin?callbackUrl=/report")}
-            className="bg-purple-600 text-white rounded-md px-4 py-2 hover:bg-purple-700 transition"
+            className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
           >
             Sign In / Sign Up
           </button>
           <p className="text-sm text-gray-700 mt-3">Otherwise, continue with the report form below anonymously.</p>
         </div>
 
-        <div className="bg-purple-50 border border-purple-200 text-purple-800 px-4 py-4 rounded mb-6">
+        <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded mb-6">
           <p className="font-semibold">Your safety and privacy come first.</p>
           <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
             <li>Anonymous reports are accepted and reviewed.</li>
@@ -136,8 +136,8 @@ export default function ReportPage() {
 
           <p>Enter your Full Name (Optional)</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="Your Full Name"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -146,7 +146,7 @@ export default function ReportPage() {
             <p>Email Address (Optional unless you request follow-up)</p>
             <input
               type="email"
-              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -155,7 +155,7 @@ export default function ReportPage() {
 
           <p>Discrimination Type *</p>
           <select
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={discriminationType}
             onChange={(e) => setDiscriminationType(e.target.value)}
           >
@@ -170,7 +170,7 @@ export default function ReportPage() {
             <>
               <p>Please specify the type of discrimination *</p>
               <input
-                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Describe the type of discrimination"
                 value={customType}
                 onChange={(e) => setCustomType(e.target.value)}
@@ -180,7 +180,7 @@ export default function ReportPage() {
 
           <p>Location of Incident *</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter the location where the incident occurred"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
@@ -189,7 +189,7 @@ export default function ReportPage() {
           <p>Date of Incident *</p>
           <input
             type="date"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -197,7 +197,7 @@ export default function ReportPage() {
           <p>Time of Incident *</p>
           <input
             type="time"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={time}
             onChange={(e) => setTime(e.target.value)}
           />
@@ -214,7 +214,7 @@ export default function ReportPage() {
 
           <p>Person(s) Involved *</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter the name(s) of the person/people involved or describe them"
             value={personsInvolved}
             onChange={(e) => setPersonsInvolved(e.target.value)}
@@ -222,7 +222,7 @@ export default function ReportPage() {
 
           <p>Enter your Discrimination Details *</p>
           <textarea
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="Describe in detail what happened during the incident"
             rows={6}
             value={info}
@@ -237,7 +237,7 @@ export default function ReportPage() {
             type="file"
             multiple
             onChange={(e) => setUploadedFiles(e.target.files)}
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
           {uploadedFiles && uploadedFiles.length > 0 && (
             <div className="text-sm text-gray-700 mt-2">
@@ -273,7 +273,7 @@ export default function ReportPage() {
           </label>
 
           <button
-            className="bg-purple-600 text-white rounded-md p-3 hover:bg-purple-700 transition"
+            className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition"
             type="submit"
           >
             Submit

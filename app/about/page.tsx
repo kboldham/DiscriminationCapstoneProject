@@ -9,14 +9,14 @@ export default function AboutPage() {
       </div>
 
       <div className="border rounded-xl shadow-lg p-8 bg-white mb-6">
-        <h2 className="text-2xl font-semibold mb-3 text-blue-700">Our Mission</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-purple-700">Our Mission</h2>
         <p className="text-gray-700 leading-relaxed text-base">
           To empower people to stand against discrimination by providing accessible tools, clear guidance, and community support.
         </p>
       </div>
 
       <div className="border rounded-xl shadow-lg p-8 bg-white mb-6">
-        <h2 className="text-2xl font-semibold mb-3 text-blue-700">Who We Serve</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-purple-700">Who We Serve</h2>
         <p className="text-gray-700 leading-relaxed text-base">
           We serve individuals and families facing discrimination in housing, employment, and public accommodations by creating a trusted
           space for documentation and advocacy.
@@ -24,7 +24,7 @@ export default function AboutPage() {
       </div>
 
       <div className="border rounded-xl shadow-lg p-8 bg-white mb-6">
-        <h2 className="text-2xl font-semibold mb-3 text-blue-700">Why We Built SpeakEqual</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-purple-700">Why We Built SpeakEqual</h2>
         <p className="text-gray-700 leading-relaxed text-base">
           Reporting discrimination can feel overwhelming and isolating. We built SpeakEqual to make the process more approachable,
           reduce friction, and help people move from uncertainty toward informed action.
@@ -32,7 +32,7 @@ export default function AboutPage() {
       </div>
 
       <div className="border rounded-xl shadow-lg p-8 bg-white">
-        <h2 className="text-2xl font-semibold mb-3 text-blue-700">Our Community Commitment</h2>
+        <h2 className="text-2xl font-semibold mb-3 text-purple-700">Our Community Commitment</h2>
         <p className="text-gray-700 leading-relaxed text-base">
           Beyond individual reports, we are committed to community education and long-term change. We share patterns and insights with
           local leaders to support transparency, collaboration, and stronger responses to discrimination across Durham.

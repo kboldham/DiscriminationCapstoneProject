@@ -7,7 +7,7 @@ export default async function Header() {
   const session = await getServerSession(authOptions);
 
   return (
-    <header className="bg-gray-900 text-white shadow-md">
+    <header className="bg-purple-900 text-white shadow-md">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-4">
         
         {/* Logo / Brand */}
@@ -17,24 +17,24 @@ export default async function Header() {
 
         {/* Navigation */}
         <nav className="flex items-center gap-4">
-          <Link href="/" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+          <Link href="/" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
             Home
           </Link>
-          <Link href="/report" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+          <Link href="/report" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
             Report
           </Link>
-          <Link href="/educate" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+          <Link href="/educate" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
             Learn More
           </Link>
-          <Link href="/about" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+          <Link href="/about" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
             About Us
           </Link>
           {session?.user ? (
-            <Link href="/dashboard" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+            <Link href="/dashboard" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
               Dashboard
             </Link>
           ) : (
-            <Link href="/auth/signin?callbackUrl=/dashboard" className="px-4 py-2 border border-blue-400 rounded-lg text-sm font-medium hover:bg-blue-400 hover:text-gray-900 transition-colors">
+            <Link href="/auth/signin?callbackUrl=/dashboard" className="px-4 py-2 border border-purple-400 rounded-lg text-sm font-medium hover:bg-purple-400 hover:text-gray-900 transition-colors">
               Sign In / Sign Up
             </Link>
           )}

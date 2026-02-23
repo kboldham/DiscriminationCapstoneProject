@@ -68,7 +68,8 @@ function SignUpContent() {
       return;
     }
 
-    router.push(signinResult.url || callbackUrl);
+    // Redirect to welcome page for smooth transition
+    router.push("/auth/welcome");
   };
 
   return (
@@ -85,7 +86,7 @@ function SignUpContent() {
           placeholder="Full Name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -93,7 +94,7 @@ function SignUpContent() {
           placeholder="Email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -101,7 +102,7 @@ function SignUpContent() {
           placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
           title="Use at least 8 characters with 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
           minLength={8}
@@ -112,7 +113,7 @@ function SignUpContent() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           minLength={8}
           required
         />
@@ -127,7 +128,7 @@ function SignUpContent() {
         </label>
         <button
           type="submit"
-          className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition disabled:opacity-60"
+          className="bg-indigo-600 text-white rounded-md p-3 hover:bg-indigo-700 transition disabled:opacity-60"
           disabled={isLoading}
         >
           {isLoading ? "Creating account..." : "Create Account"}
@@ -136,7 +137,7 @@ function SignUpContent() {
 
       <p className="text-sm text-gray-700 mt-5">
         Already have an account?{" "}
-        <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-blue-700 font-medium hover:underline">
+        <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-indigo-700 font-medium hover:underline">
           Sign in
         </Link>
       </p>

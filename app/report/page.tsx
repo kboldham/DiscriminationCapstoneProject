@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import ValidationSummary from "@/app/components/ValidationSummary";
 
 type FollowUpPreference = "contact" | "anonymous";
 
 export default function ReportPage() {
   const router = useRouter();
+  const validationRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [followUpPreference, setFollowUpPreference] = useState<FollowUpPreference>("anonymous");
@@ -21,12 +23,22 @@ export default function ReportPage() {
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [showValidationModal, setShowValidationModal] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // Scroll to validation alert when errors appear
+  useEffect(() => {
+    if (showValidationModal && validationRef.current) {
+      validationRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showValidationModal]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
-    const errors = [];
+    const errors: string[] = [];
 
     // Validate all fields
     if (!discriminationType) {
@@ -62,13 +74,43 @@ export default function ReportPage() {
     }
 
     if (errors.length > 0) {
-      setError(`Please fill out the following required fields: ${errors.join(", ")}`);
+      setValidationErrors(errors);
+      setShowValidationModal(true);
       return;
     }
 
-    // If all validation passes, you can submit
-    console.log("Form submitted:", { name, discriminationType, customType, location, date, time, isEstimatedTime, personsInvolved, info, files: uploadedFiles?.length });
+    setIsSubmitting(true);
+
+    const response = await fetch("/api/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        followUpPreference,
+        discriminationType,
+        customType,
+        location,
+        date,
+        time,
+        isEstimatedTime,
+        personsInvolved,
+        info,
+        uploadedFileNames: uploadedFiles ? Array.from(uploadedFiles).map((file) => file.name) : [],
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      setError(data.error || "Unable to submit report right now.");
+      setIsSubmitting(false);
+      return;
+    }
+
     setSuccessMessage("Your report has been submitted. Thank you for speaking up.");
+
     // Reset form
     setName("");
     setEmail("");
@@ -82,6 +124,7 @@ export default function ReportPage() {
     setPersonsInvolved("");
     setInfo("");
     setUploadedFiles(null);
+    setIsSubmitting(false);
   };
 
   return (
@@ -92,6 +135,15 @@ export default function ReportPage() {
           Start your report below. You can stay anonymous, or sign in if you want to track updates.
         </p>
 
+        {showValidationModal && (
+          <div ref={validationRef}>
+            <ValidationSummary 
+              missingFields={validationErrors} 
+              onClose={() => setShowValidationModal(false)} 
+            />
+          </div>
+        )}
+
         <div className="border rounded-lg p-4 border-gray-200 mb-6">
           <p className="font-semibold text-lg">Want to track your report status?</p>
           <p className="text-sm text-gray-700 mb-3">
@@ -100,14 +152,14 @@ export default function ReportPage() {
           <button
             type="button"
             onClick={() => router.push("/auth/signin?callbackUrl=/report")}
-            className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition"
+            className="bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700 transition"
           >
             Sign In / Sign Up
           </button>
           <p className="text-sm text-gray-700 mt-3">Otherwise, continue with the report form below anonymously.</p>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-4 rounded mb-6">
+        <div className="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-4 rounded mb-6">
           <p className="font-semibold">Your safety and privacy come first.</p>
           <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
             <li>Anonymous reports are accepted and reviewed.</li>
@@ -136,7 +188,7 @@ export default function ReportPage() {
 
           <p>Enter your Full Name (Optional)</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -146,7 +198,7 @@ export default function ReportPage() {
             <p>Email Address (Optional unless you request follow-up)</p>
             <input
               type="email"
-              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -155,7 +207,7 @@ export default function ReportPage() {
 
           <p>Discrimination Type *</p>
           <select
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={discriminationType}
             onChange={(e) => setDiscriminationType(e.target.value)}
           >
@@ -170,7 +222,7 @@ export default function ReportPage() {
             <>
               <p>Please specify the type of discrimination *</p>
               <input
-                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Describe the type of discrimination"
                 value={customType}
                 onChange={(e) => setCustomType(e.target.value)}
@@ -180,7 +232,7 @@ export default function ReportPage() {
 
           <p>Location of Incident *</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter the location where the incident occurred"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
@@ -189,7 +241,7 @@ export default function ReportPage() {
           <p>Date of Incident *</p>
           <input
             type="date"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -197,7 +249,7 @@ export default function ReportPage() {
           <p>Time of Incident *</p>
           <input
             type="time"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={time}
             onChange={(e) => setTime(e.target.value)}
           />
@@ -214,7 +266,7 @@ export default function ReportPage() {
 
           <p>Person(s) Involved *</p>
           <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter the name(s) of the person/people involved or describe them"
             value={personsInvolved}
             onChange={(e) => setPersonsInvolved(e.target.value)}
@@ -222,7 +274,7 @@ export default function ReportPage() {
 
           <p>Enter your Discrimination Details *</p>
           <textarea
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             placeholder="Describe in detail what happened during the incident"
             rows={6}
             value={info}
@@ -237,7 +289,7 @@ export default function ReportPage() {
             type="file"
             multiple
             onChange={(e) => setUploadedFiles(e.target.files)}
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
           />
           {uploadedFiles && uploadedFiles.length > 0 && (
             <div className="text-sm text-gray-700 mt-2">
@@ -273,10 +325,11 @@ export default function ReportPage() {
           </label>
 
           <button
-            className="bg-blue-600 text-white rounded-md p-3 hover:bg-blue-700 transition"
+            className="bg-indigo-600 text-white rounded-md p-3 hover:bg-indigo-700 transition disabled:opacity-60"
             type="submit"
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </form>
       </div>

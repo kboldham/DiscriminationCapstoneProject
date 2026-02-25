@@ -29,15 +29,14 @@ export default async function Header() {
           <Link href="/about" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
             About Us
           </Link>
+          <Link href="/auth/signin?callbackUrl=/report" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
+            Sign In / Sign Up
+          </Link>
           {session?.user ? (
             <Link href="/dashboard" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
               Dashboard
             </Link>
-          ) : (
-            <Link href="/auth/signin?callbackUrl=/dashboard" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-              Sign In / Sign Up
-            </Link>
-          )}
+          ) : null}
         </nav>
       </div>
     </header>

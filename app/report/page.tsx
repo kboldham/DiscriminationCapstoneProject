@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import ValidationSummary from "@/app/components/ValidationSummary";
+import AiChatAssistant from "@/app/components/AiChatAssistant";
 
 type FollowUpPreference = "contact" | "anonymous";
 
 export default function ReportPage() {
-  const router = useRouter();
-  const validationRef = useRef<HTMLDivElement>(null);
+  const { data: session, status } = useSession();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [followUpPreference, setFollowUpPreference] = useState<FollowUpPreference>("anonymous");
@@ -26,21 +26,88 @@ export default function ReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showValidationModal, setShowValidationModal] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [hasAutoPopulated, setHasAutoPopulated] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
-  // Scroll to validation alert when errors appear
+  const steps = [
+    "Contact Info & Follow-Up",
+    "Discrimination Type",
+    "Incident Location",
+    "Incident Date & Time",
+    "People Involved",
+    "Incident Details",
+    "Supporting Documents",
+    "Review & Submit",
+  ];
+
+  const isLastStep = currentStep === steps.length - 1;
+  const progressPercent = Math.round(((currentStep + 1) / steps.length) * 100);
+
   useEffect(() => {
-    if (showValidationModal && validationRef.current) {
-      validationRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (status !== "authenticated" || hasAutoPopulated) {
+      return;
     }
-  }, [showValidationModal]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMessage("");
+    if (!name && session.user?.name) {
+      setName(session.user.name);
+    }
+
+    if (!email && session.user?.email) {
+      setEmail(session.user.email);
+      setFollowUpPreference("contact");
+    }
+
+    setHasAutoPopulated(true);
+  }, [status, session, name, email, hasAutoPopulated]);
+
+  const validateCurrentStep = () => {
     const errors: string[] = [];
 
-    // Validate all fields
+    if (currentStep === 0) {
+      if (followUpPreference === "contact" && !email.trim()) {
+        errors.push("Email Address (required for follow-up)");
+      }
+    }
+
+    if (currentStep === 1) {
+      if (!discriminationType) {
+        errors.push("Discrimination Type");
+      }
+
+      if (discriminationType === "other" && !customType.trim()) {
+        errors.push("Specific Discrimination Type");
+      }
+    }
+
+    if (currentStep === 2 && !location.trim()) {
+      errors.push("Location of Incident");
+    }
+
+    if (currentStep === 3) {
+      if (!date) {
+        errors.push("Date of Incident");
+      }
+
+      if (!time && !isEstimatedTime) {
+        errors.push("Time of Incident (or check Estimated Time)");
+      }
+    }
+
+    if (currentStep === 4 && !personsInvolved.trim()) {
+      errors.push("Person(s) Involved");
+    }
+
+    if (currentStep === 5 && !info.trim()) {
+      errors.push("Discrimination Details");
+    }
+
+    return errors;
+  };
+
+  const validateAllRequiredFields = () => {
+    const errors: string[] = [];
+
     if (!discriminationType) {
       errors.push("Discrimination Type");
     }
@@ -72,6 +139,34 @@ export default function ReportPage() {
     if (followUpPreference === "contact" && !email.trim()) {
       errors.push("Email Address (required for follow-up)");
     }
+
+    return errors;
+  };
+
+  const handleNext = () => {
+    const errors = validateCurrentStep();
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setShowValidationModal(true);
+      return;
+    }
+
+    setShowValidationModal(false);
+    setValidationErrors([]);
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
+
+  const handlePrevious = () => {
+    setShowValidationModal(false);
+    setValidationErrors([]);
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleSubmit = async () => {
+    setError("");
+    setSuccessMessage("");
+    const errors = validateAllRequiredFields();
 
     if (errors.length > 0) {
       setValidationErrors(errors);
@@ -112,9 +207,9 @@ export default function ReportPage() {
     setSuccessMessage("Your report has been submitted. Thank you for speaking up.");
 
     // Reset form
-    setName("");
-    setEmail("");
-    setFollowUpPreference("anonymous");
+    setName(session?.user?.name || "");
+    setEmail(session?.user?.email || "");
+    setFollowUpPreference(session?.user?.email ? "contact" : "anonymous");
     setDiscriminationType("");
     setCustomType("");
     setLocation("");
@@ -124,185 +219,26 @@ export default function ReportPage() {
     setPersonsInvolved("");
     setInfo("");
     setUploadedFiles(null);
+    setCurrentStep(0);
     setIsSubmitting(false);
   };
 
-  return (
-    <div className="max-w-xl mx-auto mt-10">
-      <div className="border rounded-xl shadow-lg p-8 bg-white">
-        <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
-        <p className="text-gray-700 mb-6">
-          Start your report below. You can stay anonymous, or sign in if you want to track updates.
-        </p>
-
-        {showValidationModal && (
-          <div ref={validationRef}>
-            <ValidationSummary 
-              missingFields={validationErrors} 
-              onClose={() => setShowValidationModal(false)} 
-            />
-          </div>
-        )}
-
-        <div className="border rounded-lg p-4 border-gray-200 mb-6">
-          <p className="font-semibold text-lg">Want to track your report status?</p>
-          <p className="text-sm text-gray-700 mb-3">
-            Sign in or create an account to save drafts and receive secure follow-up updates.
-          </p>
-          <button
-            type="button"
-            onClick={() => router.push("/auth/signin?callbackUrl=/report")}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700 transition"
-          >
-            Sign In / Sign Up
-          </button>
-          <p className="text-sm text-gray-700 mt-3">Otherwise, continue with the report form below anonymously.</p>
-        </div>
-
-        <div className="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-4 rounded mb-6">
-          <p className="font-semibold">Your safety and privacy come first.</p>
-          <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
-            <li>Anonymous reports are accepted and reviewed.</li>
-            <li>If you choose to create an account, your information is used only for report management and follow-up.</li>
-          </ul>
-        </div>
-
-        {successMessage && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <p className="font-semibold mb-1">Report Submitted</p>
-            <p>{successMessage}</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <h3 className="text-xl font-semibold">Report Details</h3>
-          <p className="text-sm text-gray-700">
-            Share what happened, when it occurred, and any supporting context you’re comfortable providing.
-          </p>
-
-          <p>Enter your Full Name (Optional)</p>
-          <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-
-          <>
-            <p>Email Address (Optional unless you request follow-up)</p>
+  const renderStepContent = () => {
+    if (currentStep === 0) {
+      return (
+        <div className="space-y-4">
+          <div>
+            <p className="mb-2">What is your email address? (Optional unless you request follow-up)</p>
             <input
               type="email"
-              className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-          </>
+          </div>
 
-          <p>Discrimination Type *</p>
-          <select
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={discriminationType}
-            onChange={(e) => setDiscriminationType(e.target.value)}
-          >
-            <option value="">Select a type</option>
-            <option value="housing">Housing</option>
-            <option value="employment">Employment</option>
-            <option value="public">Public Accommodations</option>
-            <option value="other">Other</option>
-          </select>
-
-          {discriminationType === "other" && (
-            <>
-              <p>Please specify the type of discrimination *</p>
-              <input
-                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="Describe the type of discrimination"
-                value={customType}
-                onChange={(e) => setCustomType(e.target.value)}
-              />
-            </>
-          )}
-
-          <p>Location of Incident *</p>
-          <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter the location where the incident occurred"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-
-          <p>Date of Incident *</p>
-          <input
-            type="date"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-
-          <p>Time of Incident *</p>
-          <input
-            type="time"
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-          />
-
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isEstimatedTime}
-              onChange={(e) => setIsEstimatedTime(e.target.checked)}
-              className="w-4 h-4"
-            />
-            <span className="text-sm text-gray-700">I don't know the exact time (Estimated)</span>
-          </label>
-
-          <p>Person(s) Involved *</p>
-          <input
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter the name(s) of the person/people involved or describe them"
-            value={personsInvolved}
-            onChange={(e) => setPersonsInvolved(e.target.value)}
-          />
-
-          <p>Enter your Discrimination Details *</p>
-          <textarea
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-            placeholder="Describe in detail what happened during the incident"
-            rows={6}
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
-
-          <p className="font-medium">Supporting Documents (Optional)</p>
-          <p className="text-sm text-gray-700 mb-2">
-            Upload any relevant files such as emails, photos, screenshots, contracts, or other documentation that supports your report.
-          </p>
-          <input
-            type="file"
-            multiple
-            onChange={(e) => setUploadedFiles(e.target.files)}
-            className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-          />
-          {uploadedFiles && uploadedFiles.length > 0 && (
-            <div className="text-sm text-gray-700 mt-2">
-              <p className="font-medium mb-1">Selected files ({uploadedFiles.length}):</p>
-              <ul className="list-disc pl-5">
-                {Array.from(uploadedFiles).map((file, index) => (
-                  <li key={index}>{file.name} ({(file.size / 1024).toFixed(1)} KB)</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <p className="font-medium">Would you like follow-up on this report?</p>
+          <p className="text-sm text-gray-700">Would you like follow-up on this report?</p>
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -324,14 +260,342 @@ export default function ReportPage() {
             <span className="text-sm text-gray-700">No, keep this fully anonymous</span>
           </label>
 
-          <button
-            className="bg-indigo-600 text-white rounded-md p-3 hover:bg-indigo-700 transition disabled:opacity-60"
-            type="submit"
-            disabled={isSubmitting}
+          <div>
+            <p className="mb-2">Enter your Full Name (Optional)</p>
+            <input
+              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (currentStep === 1) {
+      return (
+        <div className="space-y-4">
+          <p>What type of discrimination happened? *</p>
+          <select
+            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={discriminationType}
+            onChange={(e) => setDiscriminationType(e.target.value)}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            <option value="">Select a type</option>
+            <option value="housing">Housing</option>
+            <option value="employment">Employment</option>
+            <option value="public">Public Accommodations</option>
+            <option value="other">Other</option>
+          </select>
+
+          {discriminationType === "other" && (
+            <div>
+              <p className="mb-2">Please specify the type of discrimination *</p>
+              <input
+                className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Describe the type of discrimination"
+                value={customType}
+                onChange={(e) => setCustomType(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (currentStep === 2) {
+      return (
+        <div className="space-y-4">
+          <p>Where did the incident happen? *</p>
+          <input
+            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter the location where the incident occurred"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+      );
+    }
+
+    if (currentStep === 3) {
+      return (
+        <div className="space-y-4">
+          <div>
+            <p className="mb-2">What date did this happen? *</p>
+            <input
+              type="date"
+              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <p className="mb-2">What time did this happen? *</p>
+            <input
+              type="time"
+              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isEstimatedTime}
+              onChange={(e) => setIsEstimatedTime(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">I don't know the exact time (Estimated)</span>
+          </label>
+        </div>
+      );
+    }
+
+    if (currentStep === 4) {
+      return (
+        <div className="space-y-4">
+          <p>Who was involved? *</p>
+          <input
+            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter the name(s) of the person/people involved or describe them"
+            value={personsInvolved}
+            onChange={(e) => setPersonsInvolved(e.target.value)}
+          />
+        </div>
+      );
+    }
+
+    if (currentStep === 5) {
+      return (
+        <div className="space-y-4">
+          <p>Please describe what happened. *</p>
+          <textarea
+            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            placeholder="Describe in detail what happened during the incident"
+            rows={7}
+            value={info}
+            onChange={(e) => setInfo(e.target.value)}
+          />
+        </div>
+      );
+    }
+
+    if (currentStep === 6) {
+      return (
+        <div className="space-y-4">
+          <p className="font-medium">Upload supporting documents (Optional)</p>
+          <p className="text-sm text-gray-700">
+            Upload any relevant files such as emails, photos, screenshots, contracts, or other documentation that supports your report.
+          </p>
+          <input
+            type="file"
+            multiple
+            onChange={(e) => setUploadedFiles(e.target.files)}
+            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+          />
+          {uploadedFiles && uploadedFiles.length > 0 && (
+            <div className="text-sm text-gray-700 mt-2">
+              <p className="font-medium mb-1">Selected files ({uploadedFiles.length}):</p>
+              <ul className="list-disc pl-5">
+                {Array.from(uploadedFiles).map((file, index) => (
+                  <li key={index}>
+                    {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <p className="font-semibold">Review your report before submitting</p>
+        <div className="grid gap-3 text-sm">
+          <div>
+            <p className="font-medium">Full Name</p>
+            <p className="text-gray-700">{name || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Email</p>
+            <p className="text-gray-700">{email || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Follow-up Preference</p>
+            <p className="text-gray-700">{followUpPreference === "contact" ? "Contact me" : "Anonymous"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Discrimination Type</p>
+            <p className="text-gray-700">
+              {discriminationType || "Not provided"}
+              {discriminationType === "other" && customType ? ` (${customType})` : ""}
+            </p>
+          </div>
+          <div>
+            <p className="font-medium">Location</p>
+            <p className="text-gray-700">{location || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Date</p>
+            <p className="text-gray-700">{date || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Time</p>
+            <p className="text-gray-700">{time || (isEstimatedTime ? "Estimated time" : "Not provided")}</p>
+          </div>
+          <div>
+            <p className="font-medium">Person(s) Involved</p>
+            <p className="text-gray-700">{personsInvolved || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Incident Details</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{info || "Not provided"}</p>
+          </div>
+          <div>
+            <p className="font-medium">Supporting Files</p>
+            <p className="text-gray-700">
+              {uploadedFiles && uploadedFiles.length > 0
+                ? `${uploadedFiles.length} file(s) selected`
+                : "No files selected"}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto mt-10 px-4 pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="border rounded-xl shadow-lg p-6 bg-white">
+            <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
+            <p className="text-gray-700">
+              Answer one question at a time. You can go back anytime and review everything before submitting.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border rounded-lg p-4 border-gray-200 bg-white">
+              <p className="font-semibold text-lg">Report Status</p>
+              {status === "authenticated" ? (
+                <>
+                  <p className="text-sm text-gray-700 mt-2 mb-1">
+                    You are signed in as <span className="font-semibold">{session?.user?.email}</span>.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Your account details are auto-filled where applicable.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-700 mt-2 mb-1">
+                    Use the <span className="font-semibold">Sign In / Sign Up</span> tab at the top to save drafts and receive secure follow-up updates.
+                  </p>
+                  <p className="text-sm text-gray-700">You can also continue this report anonymously.</p>
+                </>
+              )}
+            </div>
+
+            <div className="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-4 rounded">
+              <p className="font-semibold">Your safety and privacy come first.</p>
+              <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
+                <li>Anonymous reports are accepted and reviewed.</li>
+                <li>If you choose to create an account, your information is used only for report management and follow-up.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border rounded-xl shadow-sm p-6 bg-white">
+            <div className="mb-5">
+              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                <span>Step {currentStep + 1} of {steps.length}</span>
+                <span>{progressPercent}% complete</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-indigo-600 h-2 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+              </div>
+              <p className="mt-3 font-medium text-gray-900">{steps[currentStep]}</p>
+            </div>
+
+            {showValidationModal && (
+              <ValidationSummary
+                missingFields={validationErrors}
+                onClose={() => setShowValidationModal(false)}
+              />
+            )}
+
+            {successMessage && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <p className="font-semibold mb-1">Report Submitted</p>
+                <p>{successMessage}</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+
+            <div className="rounded-lg border border-gray-200 p-5 bg-gray-50 mb-5">
+              {renderStepContent()}
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={handlePrevious}
+                disabled={currentStep === 0 || isSubmitting}
+                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              {!isLastStep ? (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="bg-indigo-600 text-white rounded-md px-5 py-2 hover:bg-indigo-700 transition"
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="bg-indigo-600 text-white rounded-md px-5 py-2 hover:bg-indigo-700 transition disabled:opacity-60"
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Report"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-1 lg:sticky lg:top-6 space-y-3">
+          <button
+            type="button"
+            onClick={() => setIsAssistantOpen((prev) => !prev)}
+            className="w-full bg-indigo-600 text-white rounded-md px-4 py-3 hover:bg-indigo-700 transition"
+          >
+            {isAssistantOpen ? "Hide AI Assistant" : "Open AI Assistant"}
           </button>
-        </form>
+
+          {isAssistantOpen && (
+            <div className="border rounded-xl p-4 border-gray-200 bg-white shadow-sm">
+              <AiChatAssistant
+                title="Need help while filling this report?"
+                description="Ask a question, then continue with your report steps."
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

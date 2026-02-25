@@ -1,3 +1,5 @@
+import AiChatAssistant from "@/app/components/AiChatAssistant";
+
 export default function Home() {
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -18,6 +20,12 @@ export default function Home() {
         <p className="text-gray-700">
           Use our educational resources to better understand discrimination categories, reporting options, and practical actions you can take next.
         </p>
+        <div className="mt-6">
+          <AiChatAssistant
+            title="Open AI Chat Assistant"
+            description="It is already open below. Just type your question and press Send."
+          />
+        </div>
       </div>
 
       <div className="border rounded-lg shadow-md p-6 bg-white">

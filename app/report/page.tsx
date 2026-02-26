@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import ValidationSummary from "@/app/components/ValidationSummary";
-import AiChatAssistant from "@/app/components/AiChatAssistant";
 
 type FollowUpPreference = "contact" | "anonymous";
 
@@ -28,7 +27,6 @@ export default function ReportPage() {
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [hasAutoPopulated, setHasAutoPopulated] = useState(false);
-  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   const steps = [
     "Contact Info & Follow-Up",
@@ -228,17 +226,17 @@ export default function ReportPage() {
       return (
         <div className="space-y-4">
           <div>
-            <p className="mb-2">What is your email address? (Optional unless you request follow-up)</p>
+            <p className="mb-2">Email Address (Optional unless you request follow-up)</p>
             <input
               type="email"
-              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <p className="text-sm text-gray-700">Would you like follow-up on this report?</p>
+          <p className="text-sm text-slate-600">Would you like follow-up updates?</p>
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -247,7 +245,7 @@ export default function ReportPage() {
               onChange={() => setFollowUpPreference("contact")}
               className="w-4 h-4"
             />
-            <span className="text-sm text-gray-700">Yes, contact me (requires email or account)</span>
+            <span className="text-sm text-slate-600">Yes, contact me (requires an email or account).</span>
           </label>
           <label className="flex items-center gap-2">
             <input
@@ -257,13 +255,13 @@ export default function ReportPage() {
               onChange={() => setFollowUpPreference("anonymous")}
               className="w-4 h-4"
             />
-            <span className="text-sm text-gray-700">No, keep this fully anonymous</span>
+            <span className="text-sm text-slate-600">No, keep this report anonymous.</span>
           </label>
 
           <div>
-            <p className="mb-2">Enter your Full Name (Optional)</p>
+            <p className="mb-2">Full Name (Optional)</p>
             <input
-              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -276,9 +274,9 @@ export default function ReportPage() {
     if (currentStep === 1) {
       return (
         <div className="space-y-4">
-          <p>What type of discrimination happened? *</p>
+          <p>What type of discrimination occurred? *</p>
           <select
-            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={discriminationType}
             onChange={(e) => setDiscriminationType(e.target.value)}
           >
@@ -291,10 +289,10 @@ export default function ReportPage() {
 
           {discriminationType === "other" && (
             <div>
-              <p className="mb-2">Please specify the type of discrimination *</p>
+              <p className="mb-2">Specify the discrimination type *</p>
               <input
-                className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="Describe the type of discrimination"
+                className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Describe the discrimination type"
                 value={customType}
                 onChange={(e) => setCustomType(e.target.value)}
               />
@@ -307,10 +305,10 @@ export default function ReportPage() {
     if (currentStep === 2) {
       return (
         <div className="space-y-4">
-          <p>Where did the incident happen? *</p>
+          <p>Where did this happen? *</p>
           <input
-            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter the location where the incident occurred"
+            className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter the incident location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
@@ -322,20 +320,20 @@ export default function ReportPage() {
       return (
         <div className="space-y-4">
           <div>
-            <p className="mb-2">What date did this happen? *</p>
+            <p className="mb-2">Incident Date *</p>
             <input
               type="date"
-              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
 
           <div>
-            <p className="mb-2">What time did this happen? *</p>
+            <p className="mb-2">Incident Time *</p>
             <input
               type="time"
-              className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={time}
               onChange={(e) => setTime(e.target.value)}
             />
@@ -348,7 +346,7 @@ export default function ReportPage() {
               onChange={(e) => setIsEstimatedTime(e.target.checked)}
               className="w-4 h-4"
             />
-            <span className="text-sm text-gray-700">I don't know the exact time (Estimated)</span>
+            <span className="text-sm text-slate-600">I don&apos;t know the exact time (use an estimate).</span>
           </label>
         </div>
       );
@@ -359,8 +357,8 @@ export default function ReportPage() {
         <div className="space-y-4">
           <p>Who was involved? *</p>
           <input
-            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter the name(s) of the person/people involved or describe them"
+            className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter names or descriptions of the people involved"
             value={personsInvolved}
             onChange={(e) => setPersonsInvolved(e.target.value)}
           />
@@ -371,10 +369,10 @@ export default function ReportPage() {
     if (currentStep === 5) {
       return (
         <div className="space-y-4">
-          <p>Please describe what happened. *</p>
+          <p>Describe what happened. *</p>
           <textarea
-            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-            placeholder="Describe in detail what happened during the incident"
+            className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            placeholder="Describe what happened in as much detail as possible"
             rows={7}
             value={info}
             onChange={(e) => setInfo(e.target.value)}
@@ -386,18 +384,18 @@ export default function ReportPage() {
     if (currentStep === 6) {
       return (
         <div className="space-y-4">
-          <p className="font-medium">Upload supporting documents (Optional)</p>
-          <p className="text-sm text-gray-700">
-            Upload any relevant files such as emails, photos, screenshots, contracts, or other documentation that supports your report.
+          <p className="font-medium">Upload Supporting Documents (Optional)</p>
+          <p className="text-sm text-slate-600">
+            Upload relevant files such as emails, photos, screenshots, contracts, or other supporting documentation.
           </p>
           <input
             type="file"
             multiple
             onChange={(e) => setUploadedFiles(e.target.files)}
-            className="w-full border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            className="w-full border border-slate-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
           />
           {uploadedFiles && uploadedFiles.length > 0 && (
-            <div className="text-sm text-gray-700 mt-2">
+            <div className="text-sm text-slate-600 mt-2">
               <p className="font-medium mb-1">Selected files ({uploadedFiles.length}):</p>
               <ul className="list-disc pl-5">
                 {Array.from(uploadedFiles).map((file, index) => (
@@ -414,50 +412,50 @@ export default function ReportPage() {
 
     return (
       <div className="space-y-4">
-        <p className="font-semibold">Review your report before submitting</p>
+        <p className="font-semibold">Review Your Report Before Submitting</p>
         <div className="grid gap-3 text-sm">
           <div>
             <p className="font-medium">Full Name</p>
-            <p className="text-gray-700">{name || "Not provided"}</p>
+            <p className="text-slate-600">{name || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Email</p>
-            <p className="text-gray-700">{email || "Not provided"}</p>
+            <p className="text-slate-600">{email || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Follow-up Preference</p>
-            <p className="text-gray-700">{followUpPreference === "contact" ? "Contact me" : "Anonymous"}</p>
+            <p className="text-slate-600">{followUpPreference === "contact" ? "Contact me" : "Anonymous"}</p>
           </div>
           <div>
             <p className="font-medium">Discrimination Type</p>
-            <p className="text-gray-700">
+            <p className="text-slate-600">
               {discriminationType || "Not provided"}
               {discriminationType === "other" && customType ? ` (${customType})` : ""}
             </p>
           </div>
           <div>
             <p className="font-medium">Location</p>
-            <p className="text-gray-700">{location || "Not provided"}</p>
+            <p className="text-slate-600">{location || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Date</p>
-            <p className="text-gray-700">{date || "Not provided"}</p>
+            <p className="text-slate-600">{date || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Time</p>
-            <p className="text-gray-700">{time || (isEstimatedTime ? "Estimated time" : "Not provided")}</p>
+            <p className="text-slate-600">{time || (isEstimatedTime ? "Estimated time" : "Not provided")}</p>
           </div>
           <div>
             <p className="font-medium">Person(s) Involved</p>
-            <p className="text-gray-700">{personsInvolved || "Not provided"}</p>
+            <p className="text-slate-600">{personsInvolved || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Incident Details</p>
-            <p className="text-gray-700 whitespace-pre-wrap">{info || "Not provided"}</p>
+            <p className="text-slate-600 whitespace-pre-wrap">{info || "Not provided"}</p>
           </div>
           <div>
             <p className="font-medium">Supporting Files</p>
-            <p className="text-gray-700">
+            <p className="text-slate-600">
               {uploadedFiles && uploadedFiles.length > 0
                 ? `${uploadedFiles.length} file(s) selected`
                 : "No files selected"}
@@ -469,39 +467,39 @@ export default function ReportPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 px-4 pb-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="border rounded-xl shadow-lg p-6 bg-white">
+    <div className="max-w-3xl mx-auto mt-8 px-4 pb-10">
+      <div className="space-y-5">
+          <div className="border border-indigo-300 rounded-xl shadow-sm p-6 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white">
+            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-100 mb-2">Guided Incident Form</p>
             <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
-            <p className="text-gray-700">
-              Answer one question at a time. You can go back anytime and review everything before submitting.
+            <p className="text-indigo-50">
+              Complete one step at a time. You can go back and review everything before submitting.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border rounded-lg p-4 border-gray-200 bg-white">
-              <p className="font-semibold text-lg">Report Status</p>
+            <div className="border rounded-lg p-4 border-indigo-200 bg-indigo-50 shadow-sm h-full">
+              <p className="font-semibold text-lg text-indigo-800">Report Status</p>
               {status === "authenticated" ? (
                 <>
-                  <p className="text-sm text-gray-700 mt-2 mb-1">
+                  <p className="text-sm text-slate-700 mt-2 mb-1">
                     You are signed in as <span className="font-semibold">{session?.user?.email}</span>.
                   </p>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-slate-700">
                     Your account details are auto-filled where applicable.
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-gray-700 mt-2 mb-1">
-                    Use the <span className="font-semibold">Sign In / Sign Up</span> tab at the top to save drafts and receive secure follow-up updates.
+                  <p className="text-sm text-slate-700 mt-2 mb-1">
+                    Use the <span className="font-semibold">Sign In / Sign Up</span> tab to save drafts and receive secure updates.
                   </p>
-                  <p className="text-sm text-gray-700">You can also continue this report anonymously.</p>
+                  <p className="text-sm text-slate-700">You can also continue this report anonymously.</p>
                 </>
               )}
             </div>
 
-            <div className="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-4 rounded">
+            <div className="bg-teal-100 border border-teal-300 text-teal-900 px-4 py-4 rounded shadow-sm h-full">
               <p className="font-semibold">Your safety and privacy come first.</p>
               <ul className="list-disc pl-5 text-sm mt-2 space-y-1">
                 <li>Anonymous reports are accepted and reviewed.</li>
@@ -510,16 +508,16 @@ export default function ReportPage() {
             </div>
           </div>
 
-          <div className="border rounded-xl shadow-sm p-6 bg-white">
-            <div className="mb-5">
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+          <div className="border border-indigo-200 rounded-xl shadow-sm p-6 bg-white">
+            <div className="mb-6">
+              <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
                 <span>Step {currentStep + 1} of {steps.length}</span>
                 <span>{progressPercent}% complete</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-indigo-600 h-2 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+              <div className="w-full bg-indigo-100 rounded-full h-2.5">
+                <div className="bg-indigo-600 h-2.5 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
               </div>
-              <p className="mt-3 font-medium text-gray-900">{steps[currentStep]}</p>
+              <p className="mt-3 font-semibold text-slate-900">{steps[currentStep]}</p>
             </div>
 
             {showValidationModal && (
@@ -542,7 +540,7 @@ export default function ReportPage() {
               </div>
             )}
 
-            <div className="rounded-lg border border-gray-200 p-5 bg-gray-50 mb-5">
+            <div className="rounded-lg border border-indigo-200 p-5 bg-indigo-50/70 mb-6">
               {renderStepContent()}
             </div>
 
@@ -551,7 +549,7 @@ export default function ReportPage() {
                 type="button"
                 onClick={handlePrevious}
                 disabled={currentStep === 0 || isSubmitting}
-                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+                className="px-4 py-2.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 transition disabled:opacity-50 font-medium"
               >
                 Previous
               </button>
@@ -560,7 +558,7 @@ export default function ReportPage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="bg-indigo-600 text-white rounded-md px-5 py-2 hover:bg-indigo-700 transition"
+                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition font-semibold"
                 >
                   Next
                 </button>
@@ -569,33 +567,13 @@ export default function ReportPage() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="bg-indigo-600 text-white rounded-md px-5 py-2 hover:bg-indigo-700 transition disabled:opacity-60"
+                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition disabled:opacity-60 font-semibold"
                 >
                   {isSubmitting ? "Submitting..." : "Submit Report"}
                 </button>
               )}
             </div>
           </div>
-        </div>
-
-        <div className="lg:col-span-1 lg:sticky lg:top-6 space-y-3">
-          <button
-            type="button"
-            onClick={() => setIsAssistantOpen((prev) => !prev)}
-            className="w-full bg-indigo-600 text-white rounded-md px-4 py-3 hover:bg-indigo-700 transition"
-          >
-            {isAssistantOpen ? "Hide AI Assistant" : "Open AI Assistant"}
-          </button>
-
-          {isAssistantOpen && (
-            <div className="border rounded-xl p-4 border-gray-200 bg-white shadow-sm">
-              <AiChatAssistant
-                title="Need help while filling this report?"
-                description="Ask a question, then continue with your report steps."
-              />
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

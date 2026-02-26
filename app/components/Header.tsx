@@ -1,43 +1,22 @@
-import Link from "next/link";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
+import HeaderNav from "@/app/components/HeaderNav";
 
 export default async function Header() {
   const session = await getServerSession(authOptions);
 
   return (
-    <header className="bg-gray-900 text-white shadow-md">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-4">
-        
-        {/* Logo / Brand */}
-        <div className="text-xl font-semibold tracking-wide">
-          SpeakEqual
+    <header className="sticky top-0 z-40 border-b border-indigo-900/50 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 text-white shadow-sm">
+      <div className="max-w-6xl mx-auto flex flex-col gap-4 px-4 sm:px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p className="text-xl font-semibold tracking-tight text-white">SpeakEqual</p>
+          <p className="text-xs text-indigo-200">Fair Reporting and Community Support</p>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-4">
-          <Link href="/" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-            Home
-          </Link>
-          <Link href="/report" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-            Report
-          </Link>
-          <Link href="/educate" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-            Learn More
-          </Link>
-          <Link href="/about" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-            About Us
-          </Link>
-          <Link href="/auth/signin?callbackUrl=/report" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-            Sign In / Sign Up
-          </Link>
-          {session?.user ? (
-            <Link href="/dashboard" className="px-4 py-2 border border-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-400 hover:text-gray-900 transition-colors">
-              Dashboard
-            </Link>
-          ) : null}
-        </nav>
+        <div className="flex flex-col gap-2 lg:items-end">
+          <HeaderNav isAuthenticated={Boolean(session?.user)} />
+        </div>
       </div>
     </header>
   );

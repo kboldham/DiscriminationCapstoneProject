@@ -10,10 +10,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="text-slate-900 antialiased">
         <Providers>
           <Header />
-          <main>{children}</main>
+          <main className="min-h-[calc(100vh-72px)]">{children}</main>
         </Providers>
       </body>
     </html>

@@ -1,39 +1,51 @@
-import AiChatAssistant from "@/app/components/AiChatAssistant";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-4 text-center">Welcome to SpeakEqual</h1>
-      <p className="text-gray-700 text-center mb-8">
-        A simple place to report discrimination, understand your options, and access support in Durham, NC.
-      </p>
-      
-      <div className="border rounded-lg shadow-md p-6 bg-white mb-6">
-        <h2 className="text-2xl font-bold mb-4">Start a Report</h2>
-        <p className="text-gray-700">
-          Document incidents in housing, employment, and public accommodations through a structured form designed to reduce stress and confusion.
+    <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
+      <section className="rounded-2xl border border-indigo-300 bg-gradient-to-r from-indigo-600 to-teal-500 shadow-sm p-8 md:p-10 text-white">
+        <p className="text-xs font-semibold tracking-wide uppercase text-indigo-100 mb-3">Community-first reporting in Durham, NC</p>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Welcome to SpeakEqual</h1>
+        <p className="text-indigo-50 text-lg max-w-3xl leading-relaxed">
+          A trusted space to report discrimination, understand your options, and take clear next steps.
         </p>
-      </div>
-
-      <div className="border rounded-lg shadow-md p-6 bg-white mb-6">
-        <h2 className="text-2xl font-bold mb-4">Learn Your Next Steps</h2>
-        <p className="text-gray-700">
-          Use our educational resources to better understand discrimination categories, reporting options, and practical actions you can take next.
-        </p>
-        <div className="mt-6">
-          <AiChatAssistant
-            title="Open AI Chat Assistant"
-            description="It is already open below. Just type your question and press Send."
-          />
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/report" className="rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 transition-colors">
+            File a Report
+          </Link>
+          <Link href="/about" className="rounded-md border border-white/80 bg-transparent px-5 py-2.5 text-sm font-medium text-white hover:bg-white/15 transition-colors">
+            Project Overview
+          </Link>
         </div>
-      </div>
+      </section>
 
-      <div className="border rounded-lg shadow-md p-6 bg-white">
-        <h2 className="text-2xl font-bold mb-4">Track with an Account (Optional)</h2>
-        <p className="text-gray-700">
-          Create an account only if you want to save drafts and track report updates. Anonymous reporting is always available.
-        </p>
-      </div>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="border border-indigo-200 rounded-xl shadow-sm p-6 bg-indigo-50">
+          <h2 className="text-lg font-semibold mb-2 text-indigo-700">Start a Report</h2>
+          <p className="text-slate-600 leading-relaxed">
+            Report incidents in housing, employment, and public accommodations through a guided process.
+          </p>
+        </div>
+
+        <div className="border border-teal-200 rounded-xl shadow-sm p-6 bg-teal-50">
+          <h2 className="text-lg font-semibold mb-2 text-teal-700">Explore Your Next Steps</h2>
+          <p className="text-slate-600 leading-relaxed">
+            Learn your rights, reporting options, and practical actions you can take.
+          </p>
+        </div>
+
+        <div className="border border-amber-200 rounded-xl shadow-sm p-6 bg-amber-50">
+          <h2 className="text-lg font-semibold mb-2 text-amber-700">Track with an Account</h2>
+          <p className="text-slate-600 leading-relaxed">
+            Creating an account is optional. You can always report anonymously.
+          </p>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-4 shadow-sm">
+        <p className="text-indigo-700 font-semibold">Community Commitment</p>
+        <p className="text-slate-600 text-sm mt-1">SpeakEqual centers dignity, safety, and accountability in every step of the reporting process.</p>
+      </section>
     </div>
   );
 }

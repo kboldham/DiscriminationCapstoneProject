@@ -73,10 +73,12 @@ function SignUpContent() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 border rounded-xl shadow-lg p-8 bg-white">
-      <h1 className="text-2xl font-semibold mb-2">Create Account</h1>
-      <p className="text-sm text-gray-700 mb-6">Create an account to save drafts and track your report updates.</p>
-      <p className="text-sm text-gray-700 mb-4">Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.</p>
+    <div className="max-w-md mx-auto mt-10 px-4">
+      <div className="border border-teal-200 rounded-2xl shadow-sm p-8 bg-white">
+      <p className="text-sm font-semibold text-teal-700 mb-2">Get Started</p>
+      <h1 className="text-2xl font-semibold mb-2 text-slate-900">Create Account</h1>
+      <p className="text-sm text-slate-600 mb-6">Create an account to save drafts and track your report updates.</p>
+      <p className="text-sm text-slate-600 mb-4">Use at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.</p>
 
       {error && <p className="mb-4 text-sm text-red-700 bg-red-100 border border-red-300 rounded p-3">{error}</p>}
 
@@ -86,7 +88,7 @@ function SignUpContent() {
           placeholder="Full Name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-slate-300 bg-white text-slate-900 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -94,7 +96,7 @@ function SignUpContent() {
           placeholder="Email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-slate-300 bg-white text-slate-900 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -102,7 +104,7 @@ function SignUpContent() {
           placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-slate-300 bg-white text-slate-900 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
           title="Use at least 8 characters with 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
           minLength={8}
@@ -113,11 +115,11 @@ function SignUpContent() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-slate-300 bg-white text-slate-900 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           minLength={8}
           required
         />
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-slate-600">
           <input
             type="checkbox"
             checked={showPassword}
@@ -128,26 +130,27 @@ function SignUpContent() {
         </label>
         <button
           type="submit"
-          className="bg-indigo-600 text-white rounded-md p-3 hover:bg-indigo-700 transition disabled:opacity-60"
+          className="bg-indigo-600 text-white rounded-md p-3 hover:bg-indigo-700 transition disabled:opacity-60 font-medium"
           disabled={isLoading}
         >
           {isLoading ? "Creating account..." : "Create Account"}
         </button>
       </form>
 
-      <p className="text-sm text-gray-700 mt-5">
+      <p className="text-sm text-slate-600 mt-5">
         Already have an account?{" "}
         <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-indigo-700 font-medium hover:underline">
-          Sign in
+          Sign In
         </Link>
       </p>
+      </div>
     </div>
   );
 }
 
 export default function SignUpPage() {
   return (
-    <Suspense fallback={<div className="max-w-md mx-auto mt-10 border rounded-xl shadow-lg p-8 bg-white">Loading...</div>}>
+    <Suspense fallback={<div className="max-w-md mx-auto mt-10 border border-teal-200 rounded-2xl shadow-sm p-8 bg-white text-slate-600">Loading...</div>}>
       <SignUpContent />
     </Suspense>
   );

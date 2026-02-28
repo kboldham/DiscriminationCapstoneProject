@@ -472,7 +472,7 @@ export default function ReportPage() {
           <div className="border border-indigo-300 rounded-xl shadow-sm p-6 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white">
             <p className="text-xs font-semibold uppercase tracking-wide text-indigo-100 mb-2">Guided Incident Form</p>
             <h2 className="text-2xl font-semibold mb-2">Submit a Report</h2>
-            <p className="text-indigo-50">
+            <p className="text-indigo-50 leading-relaxed">
               Complete one step at a time. You can go back and review everything before submitting.
             </p>
           </div>
@@ -482,19 +482,19 @@ export default function ReportPage() {
               <p className="font-semibold text-lg text-indigo-800">Report Status</p>
               {status === "authenticated" ? (
                 <>
-                  <p className="text-sm text-slate-700 mt-2 mb-1">
+                  <p className="text-sm text-slate-700 mt-2 mb-1 leading-relaxed">
                     You are signed in as <span className="font-semibold">{session?.user?.email}</span>.
                   </p>
-                  <p className="text-sm text-slate-700">
+                  <p className="text-sm text-slate-700 leading-relaxed">
                     Your account details are auto-filled where applicable.
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-slate-700 mt-2 mb-1">
+                  <p className="text-sm text-slate-700 mt-2 mb-1 leading-relaxed">
                     Use the <span className="font-semibold">Sign In / Sign Up</span> tab to save drafts and receive secure updates.
                   </p>
-                  <p className="text-sm text-slate-700">You can also continue this report anonymously.</p>
+                  <p className="text-sm text-slate-700 leading-relaxed">You can also continue this report anonymously.</p>
                 </>
               )}
             </div>
@@ -549,7 +549,7 @@ export default function ReportPage() {
                 type="button"
                 onClick={handlePrevious}
                 disabled={currentStep === 0 || isSubmitting}
-                className="px-4 py-2.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 transition disabled:opacity-50 font-medium"
+                className="px-4 py-2.5 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100 transition disabled:opacity-50 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
                 Previous
               </button>
@@ -558,7 +558,7 @@ export default function ReportPage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition font-semibold"
+                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
                   Next
                 </button>
@@ -567,7 +567,7 @@ export default function ReportPage() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition disabled:opacity-60 font-semibold"
+                  className="bg-indigo-600 text-white rounded-md px-6 py-2.5 hover:bg-indigo-700 transition disabled:opacity-60 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
                   {isSubmitting ? "Submitting..." : "Submit Report"}
                 </button>

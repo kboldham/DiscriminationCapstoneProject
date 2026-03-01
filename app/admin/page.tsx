@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
         {/* Sidebar */}
         <aside style={{ width: "220px", background: "#0A1628", borderRight: "1px solid #1E293B", padding: "1.5rem 0", flexShrink: 0, display: "flex", flexDirection: "column" }}>
           <div style={{ padding: "0 1.25rem 1.5rem", borderBottom: "1px solid #1E293B" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>Durham HRC</div>
+            <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>SpeakEqual</div>
             <div style={{ fontSize: "0.72rem", color: "#64748B", marginTop: "0.2rem" }}>Admin Portal</div>
           </div>
           <nav style={{ padding: "1rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -64,8 +64,6 @@ export default async function AdminDashboard() {
                 fontSize:     "0.875rem",
                 transition:   "all 0.15s",
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#1E293B"; (e.currentTarget as HTMLElement).style.color = "#F1F5F9"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#94A3B8"; }}
               >
                 <span>{icon}</span> {label}
               </Link>
@@ -87,7 +85,7 @@ export default async function AdminDashboard() {
               <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "1.8rem", color: "#F1F5F9" }}>Dashboard</h1>
               <p style={{ color: "#64748B", fontSize: "0.85rem", marginTop: "0.2rem" }}>Durham Human Relations Commission — Admin View</p>
             </div>
-            <span style={{ background: "#1E4D8C", color: "#93C5FD", fontSize: "0.72rem", fontWeight: 700, padding: "0.25rem 0.75rem", borderRadius: "999px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <span style={{ background: "#1E40AF", color: "#93C5FD", fontSize: "0.72rem", fontWeight: 700, padding: "0.25rem 0.75rem", borderRadius: "999px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Admin
             </span>
           </div>
@@ -183,9 +181,9 @@ export default async function AdminDashboard() {
 
           {/* Durham Protected Classes Reference */}
           <div style={{ background: "#1E293B", border: "1px solid #334155", borderRadius: "16px", padding: "1.5rem", marginTop: "1.5rem" }}>
-            <h2 style={{ fontFamily: "var(--font-heading)", color: "#F1F5F9", fontSize: "1.1rem", marginBottom: "1rem" }}>Durham's 11 Protected Classes</h2>
+            <h2 style={{ fontFamily: "var(--font-heading)", color: "#F1F5F9", fontSize: "1.1rem", marginBottom: "1rem" }}>Admin Management</h2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-              {["Race","Color","Religion","Sex","National Origin","Age 40+","Disability","Sexual Orientation","Gender Identity or Expression","Familial Status","Veteran Status"].map(c => (
+              {["Password Reset", "User Managment", "Coming Soon"].map(c => (
                 <span key={c} style={{ background: "#0F172A", color: "#94A3B8", fontSize: "0.78rem", padding: "0.3rem 0.75rem", borderRadius: "999px", border: "1px solid #334155" }}>{c}</span>
               ))}
             </div>

@@ -112,11 +112,11 @@ export default function ReportPage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background: "linear-gradient(135deg, #0f2d5e 0%, #1E4D8C 100%)",
+          background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)",
           padding:    "4rem 1.5rem 3rem",
           textAlign:  "center",
         }}>
-          <span className="section-label" style={{ color: "#7dd3fc", display: "block", marginBottom: "0.75rem" }}>
+          <span className="section-label" style={{ color: "#FFFFFF", display: "block", marginBottom: "0.75rem" }}>
             Speak Equal
           </span>
           <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "#fff", marginBottom: "0.75rem" }}>
@@ -527,7 +527,7 @@ export default function ReportPage() {
           )}
         </div>
 
-        <footer style={{ background: "#0f2d5e", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
             SpeakEqual · North Carolina Central University
           </p>

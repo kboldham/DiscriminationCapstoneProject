@@ -1,12 +1,12 @@
 export const theme = {
   colors: {
     // ── Primary brand color (buttons, links, highlights)
-    primary:        "#1E4D8C",   // deep civic blue
+    primary:        "#5e1515",   // deep civic blue
     primaryHover:   "#163a6b",
     primaryLight:   "#EBF1FB",
 
     // ── Accent (badges, tags, active states)
-    accent:         "#2E9E6B",   // durham green
+    accent:         "#7B1C1C",   // durham green
     accentLight:    "#E6F6EF",
 
     // ── Backgrounds
@@ -22,7 +22,7 @@ export const theme = {
 
     // ── Borders
     border:         "#E5E7EB",
-    borderFocus:    "#1E4D8C",
+    borderFocus:    "#5e1515",
 
     // ── Status colors
     statusPending:  "#F59E0B",

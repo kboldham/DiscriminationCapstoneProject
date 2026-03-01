@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --color-primary:        #1E4D8C;
-  --color-primary-hover:  #163a6b;
+  --color-primary:        #7B1C1C;
+  --color-primary-hover:  #7B1C1C;
   --color-primary-light:  #EBF1FB;
-  --color-accent:         #2E9E6B;
+  --color-accent:         #7B1C1C;
   --color-accent-light:   #E6F6EF;
   --color-bg-base:        #F7F8FA;
   --color-bg-card:        #FFFFFF;
@@ -18,7 +18,7 @@
   --color-text-muted:     #9CA3AF;
   --color-text-inverse:   #FFFFFF;
   --color-border:         #E5E7EB;
-  --color-border-focus:   #1E4D8C;
+  --color-border-focus:   #5e1515;
   --color-nav-bg:         #FFFFFF;
   --color-nav-text:       #111827;
   --font-heading:         'Playfair Display', Georgia, serif;

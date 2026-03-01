@@ -5,7 +5,7 @@ const team = [
   { name: "Corey Little", role: "Project Manager", bio: "Short bio about this team member and their contribution to the project." },
   { name: "Savion Brown", role: "Developer", bio: "Short bio about this team member and their contribution to the project." },
   { name: "Deshawn Johnson", role: "Developer", bio: "Short bio about this team member and their contribution to the project." },
-  { name: "Kyle Oldham Name", role: "Lead Developer",  bio: "Short bio about this team member and their contribution to the project." },
+  { name: "Kyle Oldham", role: "Lead Developer",  bio: "Short bio about this team member and their contribution to the project." },
   { name: "Melanie Osley", role: "Researcher",  bio: "Short bio about this team member and their contribution to the project." },
 ];
 
@@ -17,11 +17,11 @@ export default function AboutPage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background: "linear-gradient(135deg, #0f2d5e 0%, #1E4D8C 100%)",
+          background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)",
           padding:    "5rem 1.5rem 4rem",
           textAlign:  "center",
         }}>
-          <span className="section-label" style={{ color: "#7dd3fc", display: "block", marginBottom: "0.75rem" }}>
+          <span className="section-label" style={{ color: "#FFFFFF", display: "block", marginBottom: "0.75rem" }}>
             About Speak Equal
           </span>
           <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(2rem, 4vw, 3rem)", color: "#fff", marginBottom: "1rem" }}>
@@ -101,7 +101,7 @@ export default function AboutPage() {
         </div>
 
         {/* ── FOOTER ── */}
-        <footer style={{ background: "#0f2d5e", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
             SpeakEqual · North Carolina Central University
           </p>

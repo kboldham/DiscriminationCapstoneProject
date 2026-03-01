@@ -1,34 +1,3 @@
-/*export default function Home() {
-  return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-4 text-center">Welcome to SpeakEqual</h1>
-      <p className="text-gray-700 text-center mb-8">
-        A simple place to report discrimination, understand your options, and access support in Durham, NC.
-      </p>
-      
-      <div className="border rounded-lg shadow-md p-6 bg-white mb-6">
-        <h2 className="text-2xl font-bold mb-4">Start a Report</h2>
-        <p className="text-gray-700">
-          Document incidents in housing, employment, and public accommodations through a structured form designed to reduce stress and confusion.
-        </p>
-      </div>
-
-      <div className="border rounded-lg shadow-md p-6 bg-white mb-6">
-        <h2 className="text-2xl font-bold mb-4">Learn Your Next Steps</h2>
-        <p className="text-gray-700">
-          Use our educational resources to better understand discrimination categories, reporting options, and practical actions you can take next.
-        </p>
-      </div>
-
-      <div className="border rounded-lg shadow-md p-6 bg-white">
-        <h2 className="text-2xl font-bold mb-4">Track with an Account (Optional)</h2>
-        <p className="text-gray-700">
-          Create an account only if you want to save drafts and track report updates. Anonymous reporting is always available.
-        </p>
-      </div>
-    </div>
-  );
-}*/
 import Link from "next/link";
 import Navbar from "./components/navbar";
 
@@ -40,7 +9,7 @@ export default function HomePage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background:    "linear-gradient(135deg, #0f2d5e 0%, #1E4D8C 60%, #2E9E6B 100%)",
+          background:    "linear-gradient(135deg, #7B1C1C 0%, #5e1515 60%, #7B1C1C 100%)",
           padding:       "6rem 1.5rem 5rem",
           textAlign:     "center",
           position:      "relative",
@@ -51,7 +20,7 @@ export default function HomePage() {
           <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "240px", height: "240px", borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
 
           <div style={{ maxWidth: "780px", margin: "0 auto", position: "relative" }}>
-            <span className="section-label" style={{ color: "#7dd3fc", marginBottom: "1rem", display: "block" }}>
+            <span className="section-label" style={{ color: "#FFFFFF", marginBottom: "1rem", display: "block" }}>
               City of Durham, North Carolina
             </span>
             <h1 style={{
@@ -163,7 +132,7 @@ export default function HomePage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer style={{ background: "#0f2d5e", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
             SpeakEqual · North Carolina Central University
           </p>

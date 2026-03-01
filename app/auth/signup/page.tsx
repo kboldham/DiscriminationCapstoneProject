@@ -1,153 +1,99 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
 
-const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/;
-
-function SignUpContent() {
-  const searchParams = useSearchParams();
+export default function SignUpPage() {
   const router = useRouter();
+  const [form, setForm]       = useState({ name: "", email: "", password: "", confirm: "" });
+  const [error, setError]     = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     setError("");
 
-    if (password !== confirmPassword) {
+    if (form.password !== form.confirm) {
       setError("Passwords do not match.");
       return;
     }
-
-    if (!passwordPattern.test(password)) {
-      setError("Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
-    setIsLoading(true);
+    setLoading(true);
 
-    const signupResponse = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
+    const res = await fetch("/api/auth/register", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ name: form.name, email: form.email, password: form.password }),
     });
 
-    const signupData = await signupResponse.json();
-
-    if (!signupResponse.ok) {
-      setIsLoading(false);
-      setError(signupData.error || "Unable to create account.");
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error ?? "Something went wrong.");
+      setLoading(false);
       return;
     }
 
-    const signinResult = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl,
-    });
-
-    setIsLoading(false);
-
-    if (!signinResult || signinResult.error) {
-      setError("Account created, but sign-in failed. Please sign in manually.");
-      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-      return;
-    }
-
-    router.push(signinResult.url || callbackUrl);
-  };
+    router.push("/auth/signin?registered=true");
+  }
 
   return (
-    <div className="max-w-md mx-auto mt-10 border rounded-xl shadow-lg p-8 bg-white">
-      <h1 className="text-2xl font-semibold mb-2">Create Account</h1>
-      <p className="text-sm text-gray-700 mb-6">Create an account to save drafts and track your report updates.</p>
-      <p className="text-sm text-gray-700 mb-4">Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.</p>
+    <main style={{ minHeight: "100vh", background: "var(--color-bg-base)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem 1.5rem" }}>
 
-      {error && <p className="mb-4 text-sm text-red-700 bg-red-100 border border-red-300 rounded p-3">{error}</p>}
+      <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "2rem" }}>
+        <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "#fff", fontSize: "1.2rem", fontWeight: 700 }}>D</span>
+        </div>
+        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "1.1rem", color: "var(--color-text-primary)" }}>
+          Speak Equal
+        </span>
+      </Link>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          required
-        />
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
-          title="Use at least 8 characters with 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
-          minLength={8}
-          required
-        />
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
-          className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          minLength={8}
-          required
-        />
-        <label className="flex items-center gap-2 text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={showPassword}
-            onChange={(event) => setShowPassword(event.target.checked)}
-            className="w-4 h-4"
-          />
-          Show password fields
-        </label>
-        <button
-          type="submit"
-          className="bg-purple-600 text-white rounded-md p-3 hover:bg-purple-700 transition disabled:opacity-60"
-          disabled={isLoading}
-        >
-          {isLoading ? "Creating account..." : "Create Account"}
-        </button>
-      </form>
+      <div className="card" style={{ width: "100%", maxWidth: "420px" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "1.6rem", marginBottom: "0.25rem" }}>Create an account</h1>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)", marginBottom: "1.75rem" }}>
+          Track your reports and manage appointments. Completely optional.
+        </p>
 
-      <p className="text-sm text-gray-700 mt-5">
-        Already have an account?{" "}
-        <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-purple-700 font-medium hover:underline">
-          Sign in
-        </Link>
-      </p>
-    </div>
-  );
-}
+        {error && (
+          <div style={{ background: "#FEE2E2", border: "1px solid #FECACA", borderRadius: "8px", padding: "0.75rem 1rem", marginBottom: "1.25rem" }}>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "#991B1B" }}>{error}</p>
+          </div>
+        )}
 
-export default function SignUpPage() {
-  return (
-    <Suspense fallback={<div className="max-w-md mx-auto mt-10 border rounded-xl shadow-lg p-8 bg-white">Loading...</div>}>
-      <SignUpContent />
-    </Suspense>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div>
+            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Full Name</label>
+            <input type="text" required className="form-input" placeholder="Your Name " value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+          </div>
+          
+          <div>
+            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Email</label>
+            <input type="email" required className="form-input" placeholder="you@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+          </div>
+          <div>
+            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Password</label>
+            <input type="password" required className="form-input" placeholder="Min. 8 characters" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+          </div>
+          <div>
+            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Confirm Password</label>
+            <input type="password" required className="form-input" placeholder="••••••••" value={form.confirm} onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))} />
+          </div>
+
+          <button type="submit" className="btn-primary" disabled={loading} style={{ fontSize: "1rem", padding: "0.75rem", marginTop: "0.25rem" }}>
+            {loading ? "Creating account…" : "Create Account"}
+          </button>
+        </form>
+
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)", textAlign: "center", marginTop: "1.25rem" }}>
+          Already have an account?{" "}
+          <Link href="/auth/signin" style={{ color: "var(--color-primary)", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
+        </p>
+      </div>
+    </main>
   );
 }

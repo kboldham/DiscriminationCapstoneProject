@@ -3,15 +3,99 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
+  id             String        @id @default(cuid())
+  email          String        @unique
   name           String?
   hashedPassword String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  role           String        @default("user") // "user" | "admin"
+  createdAt      DateTime      @default(now())
+
+  reports        Report[]
+  conversations  Conversation[]
+  appointments   Appointment[]
 }
+
+model Report {
+  id                 String       @id @default(cuid())
+  userId             String
+  user               User         @relation(fields: [userId], references: [id])
+
+  incidentDate       DateTime
+  // One of Durham's 11 protected classes:
+  // race | color | religion | sex | national_origin | age |
+  // disability | sexual_orientation | gender_identity | familial_status | veteran_status
+  discriminationType String
+  description        String       @db.Text
+  status             String       @default("pending") // "pending" | "reviewing" | "resolved"
+  source             String       @default("form")    // "form" | "ai"
+
+  attachments        Attachment[]
+  conversationId     String?
+  conversation       Conversation? @relation(fields: [conversationId], references: [id])
+
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+//AI 
+model Conversation {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  title     String?   // auto-generated summary for the sidebar
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  messages  Message[]
+  reports   Report[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String       // "user" | "assistant"
+  content        String       @db.Text
+  createdAt      DateTime     @default(now())
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  startTime DateTime
+  endTime   DateTime
+  isBooked  Boolean  @default(false)
+
+  appointment Appointment?
+}
+
+model Appointment {
+  id             String    @id @default(cuid())
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
+  slotId         String    @unique
+  slot           TimeSlot  @relation(fields: [slotId], references: [id])
+  reason         String?   // already optional — blank for walk-ins
+  walkIn         Boolean   @default(false)  // ← add this
+  status         String    @default("scheduled")
+  source         String    @default("calendar")
+  conversationId String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id])
+  fileName  String
+  fileUrl   String
+  fileType  String
+  createdAt DateTime @default(now())
+}
+
+

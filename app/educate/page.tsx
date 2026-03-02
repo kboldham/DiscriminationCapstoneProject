@@ -26,12 +26,114 @@ export default function Documentation() {
     },
   ];
 
+  const discriminationCategories = [
+    {
+      title: "Employment",
+      examples: "Hiring bias, unequal pay, harassment, retaliation, wrongful termination.",
+    },
+    {
+      title: "Housing",
+      examples: "Refusing to rent or sell, steering, unfair screening, discriminatory terms.",
+    },
+    {
+      title: "Public Accommodations",
+      examples: "Unequal service in stores, restaurants, healthcare, schools, or transportation.",
+    },
+    {
+      title: "Disability & Accessibility",
+      examples: "Failure to provide reasonable accommodations or accessible services.",
+    },
+  ];
+
+  const actionSteps = [
+    "Document what happened right away: dates, times, locations, people involved, and what was said or done.",
+    "Save evidence: emails, texts, voicemails, photos, screenshots, letters, and relevant policies.",
+    "Identify witnesses and keep their contact details in case follow-up is needed.",
+    "Report internally when possible (HR, landlord, school office, service manager) and keep a copy of your complaint.",
+    "File with the appropriate agency if needed and track deadlines for complaints or appeals.",
+    "Seek legal or advocacy guidance early, especially if safety, employment, or housing is at risk.",
+  ];
+
+  const supportResources = [
+    {
+      name: "EEOC",
+      description: "Federal employment discrimination complaints and guidance.",
+      href: "https://www.eeoc.gov/",
+    },
+    {
+      name: "HUD Fair Housing",
+      description: "Housing discrimination reporting and rights information.",
+      href: "https://www.hud.gov/fairhousing",
+    },
+    {
+      name: "N.C. Human Relations Commission",
+      description: "State-level support and information on discrimination matters.",
+      href: "https://www.doa.nc.gov/divisions/council-women-youth-involvement/human-relations-commission",
+    },
+    {
+      name: "Legal Aid of North Carolina",
+      description: "Legal help, referrals, and community legal resources.",
+      href: "https://legalaidnc.org/",
+    },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
       <div className="border rounded-2xl shadow-sm p-8 bg-white">
         <p className="text-sm font-semibold text-teal-700 mb-2">Education Center</p>
         <h1 className="text-3xl font-bold mb-3 text-slate-900">Resources</h1>
         <p className="text-slate-600">Find guidance, reference materials, and relevant case coverage.</p>
+      </div>
+
+      <div className="border rounded-2xl shadow-sm p-8 bg-white">
+        <h2 className="text-xl font-semibold text-indigo-700 mb-2">What Falls Under Discrimination?</h2>
+        <p className="text-sm text-slate-600 mb-4">Discrimination can appear in many contexts. Common categories include:</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {discriminationCategories.map((item) => (
+            <div key={item.title} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="font-semibold text-slate-900">{item.title}</p>
+              <p className="text-sm text-slate-600 mt-1 leading-relaxed">{item.examples}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="border rounded-2xl shadow-sm p-8 bg-white">
+        <h2 className="text-xl font-semibold text-indigo-700 mb-2">Courses of Action You Can Take</h2>
+        <p className="text-sm text-slate-600 mb-4">Use this checklist to respond quickly and protect your options.</p>
+
+        <ol className="space-y-3">
+          {actionSteps.map((step, index) => (
+            <li key={step} className="flex items-start gap-3 rounded-xl border border-indigo-100 bg-indigo-50/60 p-4">
+              <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+                {index + 1}
+              </span>
+              <p className="text-sm text-slate-700 leading-relaxed">{step}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="border rounded-2xl shadow-sm p-8 bg-white">
+        <h2 className="text-xl font-semibold text-indigo-700 mb-2">Support Resources</h2>
+        <p className="text-sm text-slate-600 mb-4">These organizations can help with reporting steps, rights information, and legal support.</p>
+
+        <ul className="space-y-3">
+          {supportResources.map((resource) => (
+            <li key={resource.href}>
+              <a
+                href={resource.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-sm"
+              >
+                <p className="font-semibold text-slate-900 group-hover:text-indigo-700">{resource.name}</p>
+                <p className="text-sm text-slate-600 mt-1">{resource.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="border rounded-2xl shadow-sm p-8 bg-white">

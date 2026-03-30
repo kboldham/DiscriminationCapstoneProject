@@ -36,7 +36,7 @@ export default async function UserDashboard() {
       <main style={{ background: "var(--color-bg-base)", minHeight: "100vh" }}>
 
         {/* ── HEADER ── */}
-        <section style={{ background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)", padding: "3rem 1.5rem 2.5rem" }}>
+        <section style={{ background: "linear-gradient(135deg, #1E1A16 0%, #2C2118 100%)", padding: "3rem 1.5rem 2.5rem" }}>
           <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
             <span className="section-label" style={{ color: "#FFFFFF", display: "block", marginBottom: "0.4rem" }}>My Portal</span>
             <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "#fff" }}>
@@ -145,8 +145,8 @@ export default async function UserDashboard() {
           </div>
         </div>
 
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center", marginTop: "2rem" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>SpeakEqual · North Carolina Central University</p>
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center", marginTop: "2rem" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>Speak Equal</p>
         </footer>
       </main>
     </>

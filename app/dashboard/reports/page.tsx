@@ -42,7 +42,7 @@ export default async function UserReportsPage() {
       <main style={{ background: "var(--color-bg-base)", minHeight: "100vh" }}>
 
         {/* Header */}
-        <section style={{ background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)", padding: "3.5rem 1.5rem 2.5rem" }}>
+        <section style={{ background: "linear-gradient(135deg, #1E1A16 0%, #2C2118 100%)", padding: "3.5rem 1.5rem 2.5rem" }}>
           <div style={{ maxWidth: "900px", margin: "0 auto" }}>
             <Link href="/dashboard" style={{ color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-body)", fontSize: "0.85rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.3rem", marginBottom: "1rem" }}>
               ← Back to Dashboard
@@ -131,8 +131,8 @@ export default async function UserReportsPage() {
           </div>
         </div>
 
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center", marginTop: "2rem" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>Speak Equal  · North Carolina Central University</p>
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center", marginTop: "2rem" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>Speak Equal</p>
         </footer>
       </main>
     </>

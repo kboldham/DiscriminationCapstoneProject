@@ -259,7 +259,7 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
 
         {/* Not logged in warning */}
         {!isLoggedIn && (
-          <div style={{ padding: "0.6rem 1.25rem", background: "var(--color-primary-light)", borderBottom: "1px solid #dbe8f8" }}>
+          <div style={{ padding: "0.6rem 1.25rem", background: "var(--color-primary-light)", borderBottom: "1px solid var(--color-border)" }}>
             <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-primary)" }}>
               <Link href="/auth/signin" style={{ fontWeight: 700, color: "var(--color-primary)" }}>Sign in</Link> to save your conversation and track your report.
             </p>
@@ -339,7 +339,7 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
           {reportCreated && (
             <div style={{ background: "var(--color-accent-light)", border: "1px solid #c6eedd", borderRadius: "10px", padding: "0.875rem 1rem" }}>
               <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-primary)", fontWeight: 600 }}>
-                ✅ Your report has been submitted successfully.
+                Your report has been submitted successfully.
               </p>
               {isLoggedIn && (
                 <Link href="/dashboard/reports" style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
@@ -356,7 +356,7 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
         {showSlotPicker && (
           <div style={{ padding: "1rem 1.25rem", borderTop: "1px solid var(--color-border)", background: "var(--color-primary-light)" }}>
             <p style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, color: "var(--color-text-primary)", marginBottom: "0.75rem" }}>
-              📅 Select an appointment time:
+              Select an appointment time:
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.5rem", marginBottom: "0.75rem" }}>
               {availableSlots.slice(0, 6).map(slot => (

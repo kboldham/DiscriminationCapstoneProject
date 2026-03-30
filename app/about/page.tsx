@@ -3,10 +3,10 @@ import Navbar from "../components/navbar";
 // ── Update these with your real team info ──
 const team = [
   { name: "Corey Little", role: "Project Manager", bio: "Bio" },
-  { name: "Savion Brown", role: "Developer", bio: "Bio" },
-  { name: "Deshawn Johnson", role: "Developer", bio: "Bio" },
+  { name: "Savion Brown", role: "Lead Developer", bio: "Bio" },
+  { name: "Deshawn Johnson", role: "Lead UI & Design", bio: "Bio" },
   { name: "Kyle Oldham", role: "Lead Developer",  bio: "Bio" },
-  { name: "Melanie Osley", role: "Researcher",  bio: "Bio" },
+  { name: "Melanie Osley", role: "Lead Researcher",  bio: "Bio" },
 ];
 
 export default function AboutPage() {
@@ -17,7 +17,7 @@ export default function AboutPage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)",
+          background: "linear-gradient(135deg, #1E1A16 0%, #2C2118 100%)",
           padding:    "5rem 1.5rem 4rem",
           textAlign:  "center",
         }}>
@@ -56,7 +56,7 @@ export default function AboutPage() {
               Our Capstone
             </h2>
             <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", lineHeight: 1.75, marginBottom: "1rem" }}>
-              NCCU students (CIS majors) will work on a two-semester Capstone project to develop a prototype App with AI integration that assists residents facing discrimination issues revolving around the 11 protected classes (e.g., housing, employment, public accommodations) in Durham, NC.
+              Students developed this platform as a two-semester Capstone project — an AI-integrated prototype that assists residents facing discrimination issues across the 11 protected classes in Durham, NC.
             </p>
             <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", lineHeight: 1.75 }}>
               The platform includes an AI-powered assistant trained on Durham's discrimination laws and
@@ -101,9 +101,9 @@ export default function AboutPage() {
         </div>
 
         {/* ── FOOTER ── */}
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
-            SpeakEqual · North Carolina Central University
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>
+            Speak Equal
           </p>
         </footer>
       </main>

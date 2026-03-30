@@ -143,7 +143,7 @@ export default function EducatePage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)",
+          background: "linear-gradient(135deg, #1E1A16 0%, #2C2118 100%)",
           padding:    "4.5rem 1.5rem 3.5rem",
           textAlign:  "center",
         }}>
@@ -239,7 +239,7 @@ export default function EducatePage() {
           )}
 
           {/* ── RESOURCE LINKS ── */}
-          <div className="card" style={{ background: "var(--color-primary-light)", border: "1px solid #dbe8f8" }}>
+          <div className="card" style={{ background: "var(--color-primary-light)", border: "1px solid var(--color-border)" }}>
             <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", marginBottom: "1rem" }}>Durham Resources</h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.75rem" }}>
               {[
@@ -247,7 +247,7 @@ export default function EducatePage() {
                 { label: "NC Human Relations ",    value: "(919) 431-3000" },
                 { label: "Durham City Hall",                value: "101 City Hall Plaza, Durham NC 27701" },
               ].map(({ label, value }) => (
-                <div key={label} style={{ padding: "0.875rem", background: "#fff", borderRadius: "10px", border: "1px solid #dbe8f8" }}>
+                <div key={label} style={{ padding: "0.875rem", background: "#fff", borderRadius: "10px", border: "1px solid var(--color-border)" }}>
                   <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.825rem", color: "var(--color-text-primary)", marginBottom: "0.25rem" }}>{label}</p>
                   <p style={{ fontFamily: "var(--font-body)", fontSize: "0.825rem", color: "var(--color-text-secondary)" }}>{value}</p>
                 </div>
@@ -256,9 +256,9 @@ export default function EducatePage() {
           </div>
         </div>
 
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
-            SpeakEqual · North Carolina Central University
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>
+            Speak Equal
           </p>
         </footer>
       </main>

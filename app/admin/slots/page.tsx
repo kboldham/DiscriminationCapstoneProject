@@ -199,7 +199,7 @@ export default function AdminSlotsPage() {
             </div>
             <div style={{ display: "flex", alignItems: "flex-end" }}>
               <button type="submit" disabled={creating} style={{
-                width: "100%", padding: "0.65rem", background: "#5e1515", color: "#fff",
+                width: "100%", padding: "0.65rem", background: "var(--color-primary)", color: "#fff",
                 border: "none", borderRadius: "8px", cursor: "pointer",
                 fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.9rem",
                 opacity: creating ? 0.6 : 1,

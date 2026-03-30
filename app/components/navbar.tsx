@@ -51,14 +51,12 @@ export default function Navbar() {
           <span style={{
             fontFamily: "var(--font-heading)",
             fontWeight: 700,
-            fontSize: "1rem",
+            fontSize: "1.05rem",
             color: "var(--color-text-primary)",
             lineHeight: 1.1,
+            letterSpacing: "-0.01em",
           }}>
-            Speak Equal<br />
-            <span style={{ fontSize: "0.7rem", fontFamily: "var(--font-body)", fontWeight: 400, color: "var(--color-text-muted)" }}>
-              North Carolina Central University
-            </span>
+            Speak Equal
           </span>
         </Link>
 

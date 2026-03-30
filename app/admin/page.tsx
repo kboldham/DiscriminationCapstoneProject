@@ -125,7 +125,7 @@ export default async function AdminDashboard() {
                     const sc = STATUS_COLORS[r.status] ?? { bg: "#334155", color: "#94A3B8" };
                     return (
                       <tr key={r.id} style={{ borderBottom: "1px solid #1E293B" }}>
-                        <td style={{ padding: "0.75rem", color: "#CBD5E1" }}>{r.user.name ?? r.user.email}</td>
+                        <td style={{ padding: "0.75rem", color: "#CBD5E1" }}>{r.user?.name ?? r.user?.email ?? "Anonymous"}</td>
                         <td style={{ padding: "0.75rem", color: "#CBD5E1", textTransform: "capitalize" }}>{r.discriminationType.replace(/_/g, " ")}</td>
                         <td style={{ padding: "0.75rem", color: "#64748B", whiteSpace: "nowrap" }}>{new Date(r.incidentDate).toLocaleDateString()}</td>
                         <td style={{ padding: "0.75rem" }}>

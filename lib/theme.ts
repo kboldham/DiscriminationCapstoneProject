@@ -1,28 +1,28 @@
 export const theme = {
   colors: {
-    // ── Primary brand color (buttons, links, highlights)
-    primary:        "#5e1515",   // deep civic blue
-    primaryHover:   "#5e1515",
-    primaryLight:   "#EBF1FB",
+    // ── Primary brand color (warm amber gold)
+    primary:        "#C4782A",
+    primaryHover:   "#AD6822",
+    primaryLight:   "#FBF3E8",
 
-    // ── Accent (badges, tags, active states)
-    accent:         "#7B1C1C",   // durham green
-    accentLight:    "#E6F6EF",
+    // ── Accent (forest green — complementary warm)
+    accent:         "#3D7A5C",
+    accentLight:    "#EBF5EE",
 
     // ── Backgrounds
-    bgBase:         "#F7F8FA",   // page background
+    bgBase:         "#FAFAF8",   // warm off-white page background
     bgCard:         "#FFFFFF",   // card/panel background
-    bgMuted:        "#F0F2F5",   // subtle section bg
+    bgMuted:        "#F5F2ED",   // subtle warm section bg
 
     // ── Text
-    textPrimary:    "#111827",
-    textSecondary:  "#4B5563",
-    textMuted:      "#9CA3AF",
+    textPrimary:    "#1C1714",
+    textSecondary:  "#5A5047",
+    textMuted:      "#9A9289",
     textInverse:    "#FFFFFF",
 
     // ── Borders
-    border:         "#E5E7EB",
-    borderFocus:    "#5e1515",
+    border:         "#EAE4DC",
+    borderFocus:    "#C4782A",
 
     // ── Status colors
     statusPending:  "#F59E0B",

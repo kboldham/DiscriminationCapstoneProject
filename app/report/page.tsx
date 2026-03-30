@@ -2,27 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
-import Chatbox from "../components/Chatbox";
+import ChatBox from "../components/Chatbot";
 
 const DISCRIMINATION_TYPES = [
-  { value: "race",              label: "Race" },
-  { value: "color",             label: "Color" },
-  { value: "religion",          label: "Religion" },
-  { value: "sex",               label: "Sex" },
-  { value: "national_origin",   label: "National Origin" },
-  { value: "age",               label: "Age (40+)" },
-  { value: "disability",        label: "Disability" },
-  { value: "sexual_orientation",label: "Sexual Orientation" },
-  { value: "gender_identity",   label: "Gender Identity or Expression" },
-  { value: "familial_status",   label: "Familial Status" },
-  { value: "veteran_status",    label: "Veteran Status" },
+  { value: "race",               label: "Race" },
+  { value: "color",              label: "Color" },
+  { value: "religion",           label: "Religion" },
+  { value: "sex",                label: "Sex" },
+  { value: "national_origin",    label: "National Origin" },
+  { value: "age",                label: "Age (40+)" },
+  { value: "disability",         label: "Disability" },
+  { value: "sexual_orientation", label: "Sexual Orientation" },
+  { value: "gender_identity",    label: "Gender Identity or Expression" },
+  { value: "familial_status",    label: "Familial Status" },
+  { value: "veteran_status",     label: "Veteran Status" },
 ];
-
-type Tab = "report" | "appointment";
-type ReportMode = "form" | "ai";
-type ApptMode = "calendar" | "ai";
-
-
 
 function formatSlot(iso: string) {
   return new Date(iso).toLocaleString("en-US", {
@@ -32,39 +26,32 @@ function formatSlot(iso: string) {
 }
 
 export default function ReportPage() {
-  const [tab, setTab]               = useState<Tab>("report");
-  const [slots, setSlots] = useState<{id:string;startTime:string;endTime:string}[]>([]);
+  const [slots, setSlots] = useState<{ id: string; startTime: string; endTime: string }[]>([]);
 
-  useEffect(() => {
-  fetch("/api/appointments").then(r => r.json()).then(setSlots);
-}, []);
-  const [reportMode, setReportMode] = useState<ReportMode>("form");
-  const [apptMode, setApptMode]     = useState<ApptMode>("calendar");
+  // Which manual section is open (null = both collapsed)
+  const [openSection, setOpenSection] = useState<"report" | "appointment" | null>(null);
 
-  // ── Report form state ──
-  const [reportForm, setReportForm] = useState({
-    incidentDate: "", discriminationType: "", description: "",
-  });
-  const [attachments, setAttachments]   = useState<File[]>([]);
+  // Report form state
+  const [reportForm, setReportForm] = useState({ incidentDate: "", discriminationType: "", description: "" });
+  const [attachments, setAttachments]       = useState<File[]>([]);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [reportLoading, setReportLoading]     = useState(false);
 
-  // ── Appointment state ──
+  // Appointment form state
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [apptReason, setApptReason]     = useState("");
   const [apptAnon, setApptAnon]         = useState(false);
   const [apptSubmitted, setApptSubmitted] = useState(false);
 
+  useEffect(() => {
+    fetch("/api/appointments").then(r => r.json()).then(setSlots).catch(() => {});
+  }, []);
 
   async function handleReportSubmit(e: React.FormEvent) {
     e.preventDefault();
     setReportLoading(true);
-
-    // Upload attachments first (get back URLs), then post report
-    // For now this is wired to the real API — works without AI
     try {
       const uploadedAttachments: { fileName: string; fileUrl: string; fileType: string }[] = [];
-
       for (const file of attachments) {
         const fd = new FormData();
         fd.append("file", file);
@@ -72,13 +59,11 @@ export default function ReportPage() {
         const data = await res.json();
         uploadedAttachments.push(data);
       }
-
       await fetch("/api/reports", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...reportForm, attachments: uploadedAttachments }),
       });
-
       setReportSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -92,14 +77,13 @@ export default function ReportPage() {
     await fetch("/api/appointments", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        slotId: selectedSlot,
-        reason: apptReason,
-        source: "calendar",
-        anonymous: apptAnon,
-      }),
+      body: JSON.stringify({ slotId: selectedSlot, reason: apptReason, source: "calendar", anonymous: apptAnon }),
     });
     setApptSubmitted(true);
+  }
+
+  function toggleSection(section: "report" | "appointment") {
+    setOpenSection(prev => prev === section ? null : section);
   }
 
   return (
@@ -109,101 +93,107 @@ export default function ReportPage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background: "linear-gradient(135deg, #7B1C1C 0%, #5e1515 100%)",
+          background: "linear-gradient(135deg, #1E1A16 0%, #2C2118 100%)",
           padding:    "4rem 1.5rem 3rem",
           textAlign:  "center",
         }}>
-          <span className="section-label" style={{ color: "#FFFFFF", display: "block", marginBottom: "0.75rem" }}>
+          <span className="section-label" style={{ color: "rgba(255,255,255,0.75)", display: "block", marginBottom: "0.75rem" }}>
             Speak Equal
           </span>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "#fff", marginBottom: "0.75rem" }}>
-            File a Report or Schedule an Appointment
+          <h1 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.8rem, 4vw, 2.8rem)", color: "#fff", marginBottom: "0.75rem", lineHeight: 1.2 }}>
+            Tell Us What Happened
           </h1>
-          <p style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.8)", maxWidth: "520px", margin: "0 auto", fontSize: "0.95rem", lineHeight: 1.7 }}>
-            You may submit reports and schedule appointments anonymously. Creating an account lets you track your report status.
+          <p style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.8)", maxWidth: "540px", margin: "0 auto", fontSize: "0.975rem", lineHeight: 1.75 }}>
+            Our AI advocate will walk you through the process — filing a report, booking an appointment, or simply answering your questions. You are never required to create an account.
           </p>
         </section>
 
-        {/* ── TAB SWITCHER ── */}
-        <div style={{ background: "var(--color-bg-card)", borderBottom: "1px solid var(--color-border)" }}>
-          <div style={{ maxWidth: "860px", margin: "0 auto", padding: "0 1.5rem", display: "flex" }}>
-            {(["report", "appointment"] as Tab[]).map(t => (
+        {/* ── AI CHATBOT — MAIN FEATURE ── */}
+        <section style={{ maxWidth: "900px", margin: "0 auto", padding: "2.5rem 1.5rem 1rem" }}>
+
+          {/* Section label */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+            <div style={{
+              background:   "var(--color-primary)",
+              color:        "#fff",
+              fontFamily:   "var(--font-body)",
+              fontSize:     "0.72rem",
+              fontWeight:   700,
+              letterSpacing:"0.08em",
+              textTransform:"uppercase",
+              padding:      "0.3rem 0.75rem",
+              borderRadius: "999px",
+            }}>
+              AI Advocate
+            </div>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
+              File a report, book an appointment, or ask any question
+            </p>
+          </div>
+
+          <ChatBox mode="general" />
+        </section>
+
+        {/* ── PREFER TO DO IT YOURSELF? ── */}
+        <section style={{ maxWidth: "900px", margin: "0 auto", padding: "1.5rem 1.5rem 3rem" }}>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
+            <div style={{ flex: 1, height: "1px", background: "var(--color-border)" }} />
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" }}>
+              Prefer to do it yourself?
+            </p>
+            <div style={{ flex: 1, height: "1px", background: "var(--color-border)" }} />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1rem" }}>
+
+            {/* ── FILE A REPORT MANUALLY ── */}
+            <div style={{ border: "1px solid var(--color-border)", borderRadius: "16px", overflow: "hidden", background: "var(--color-bg-card)" }}>
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                onClick={() => toggleSection("report")}
                 style={{
-                  padding:        "1rem 1.5rem",
-                  fontFamily:     "var(--font-body)",
-                  fontWeight:     tab === t ? 600 : 400,
-                  fontSize:       "0.925rem",
-                  color:          tab === t ? "var(--color-primary)" : "var(--color-text-secondary)",
-                  background:     "none",
-                  border:         "none",
-                  borderBottom:   tab === t ? "2px solid var(--color-primary)" : "2px solid transparent",
-                  cursor:         "pointer",
-                  textTransform:  "capitalize",
-                  transition:     "all 0.15s",
+                  width:        "100%",
+                  padding:      "1.1rem 1.25rem",
+                  display:      "flex",
+                  alignItems:   "center",
+                  justifyContent:"space-between",
+                  background:   "none",
+                  border:       "none",
+                  cursor:       "pointer",
+                  textAlign:    "left",
                 }}
               >
-                {t === "report" ? "File a Report" : "Schedule Appointment"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ maxWidth: "860px", margin: "0 auto", padding: "2.5rem 1.5rem" }}>
-
-          {/* ════════════════════════════ REPORT TAB ════════════════════════════ */}
-          {tab === "report" && (
-            <>
-              {reportSubmitted ? (
-                <div className="card" style={{ textAlign: "center", padding: "3rem" }}>
-                  <div style={{ fontSize: "3rem", marginBottom: "1rem" }}></div>
-                  <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.6rem", marginBottom: "0.75rem" }}>Report Submitted</h2>
-                  <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)" }}>
-                    Thank you. Speak Equal will review your report.
-                    If you created an account, you can track its status in your dashboard.
+                <div>
+                  <p style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.95rem", color: "var(--color-text-primary)" }}>
+                    File a Report Manually
                   </p>
-                  <button onClick={() => setReportSubmitted(false)} className="btn-outline" style={{ marginTop: "1.5rem" }}>
-                    Submit another report
-                  </button>
+                  <p style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "var(--color-text-muted)", marginTop: "0.15rem" }}>
+                    Fill out the form yourself
+                  </p>
                 </div>
-              ) : (
-                <>
-                  {/* Mode toggle */}
-                  <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.75rem" }}>
-                    {(["form", "ai"] as ReportMode[]).map(m => (
-                      <button
-                        key={m}
-                        onClick={() => setReportMode(m)}
-                        style={{
-                          flex:         1,
-                          padding:      "0.875rem",
-                          borderRadius: "12px",
-                          border:       `2px solid ${reportMode === m ? "var(--color-primary)" : "var(--color-border)"}`,
-                          background:   reportMode === m ? "var(--color-primary-light)" : "var(--color-bg-card)",
-                          cursor:       "pointer",
-                          transition:   "all 0.15s",
-                        }}
-                      >
-                        <div style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.9rem", color: reportMode === m ? "var(--color-primary)" : "var(--color-text-primary)" }}>
-                          {m === "form" ? "Fill out manually" : "Use AI Assistant"}
-                        </div>
-                        <div style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-text-muted)", marginTop: "0.2rem" }}>
-                          {m === "form" ? "Answer the fields yourself" : "Chat to guide you through it"}
-                        </div>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: "1.2rem", color: "var(--color-text-muted)", transform: openSection === "report" ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                  ↓
+                </span>
+              </button>
+
+              {openSection === "report" && (
+                <div style={{ borderTop: "1px solid var(--color-border)", padding: "1.25rem" }}>
+                  {reportSubmitted ? (
+                    <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+                      <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>✅</div>
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", marginBottom: "0.5rem" }}>Report Submitted</h3>
+                      <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>
+                        Thank you. Speak Equal will review your report.
+                      </p>
+                      <button onClick={() => setReportSubmitted(false)} className="btn-outline" style={{ marginTop: "1rem", fontSize: "0.85rem" }}>
+                        Submit another
                       </button>
-                    ))}
-                  </div>
-
-                  {/* ── MANUAL FORM ── */}
-                  {reportMode === "form" && (
-                    <form onSubmit={handleReportSubmit} className="card" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                      <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.4rem" }}>Discrimination Report</h2>
-
+                    </div>
+                  ) : (
+                    <form onSubmit={handleReportSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
-                          Date & Time of Incident *
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                          Date of Incident *
                         </label>
                         <input
                           type="datetime-local"
@@ -215,7 +205,7 @@ export default function ReportPage() {
                       </div>
 
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
                           Type of Discrimination *
                         </label>
                         <select
@@ -232,12 +222,12 @@ export default function ReportPage() {
                       </div>
 
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
-                          Description of Incident *
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                          Description *
                         </label>
                         <textarea
                           required
-                          rows={5}
+                          rows={4}
                           className="form-input"
                           placeholder="Describe what happened, including any relevant context…"
                           value={reportForm.description}
@@ -247,17 +237,10 @@ export default function ReportPage() {
                       </div>
 
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
                           Supporting Evidence (optional)
                         </label>
-                        <div style={{
-                          border:       "2px dashed var(--color-border)",
-                          borderRadius: "10px",
-                          padding:      "1.5rem",
-                          textAlign:    "center",
-                          cursor:       "pointer",
-                          background:   "var(--color-bg-muted)",
-                        }}>
+                        <div style={{ border: "2px dashed var(--color-border)", borderRadius: "10px", padding: "1rem", textAlign: "center", background: "var(--color-bg-muted)" }}>
                           <input
                             type="file"
                             multiple
@@ -266,13 +249,13 @@ export default function ReportPage() {
                             id="file-upload"
                             onChange={e => setAttachments(Array.from(e.target.files ?? []))}
                           />
-                          <label htmlFor="file-upload" style={{ cursor: "pointer", fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
+                          <label htmlFor="file-upload" style={{ cursor: "pointer", fontFamily: "var(--font-body)", fontSize: "0.825rem", color: "var(--color-text-secondary)" }}>
                             Click to upload files (images, PDFs, documents)
                           </label>
                           {attachments.length > 0 && (
-                            <div style={{ marginTop: "0.75rem", display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "center" }}>
+                            <div style={{ marginTop: "0.6rem", display: "flex", flexWrap: "wrap", gap: "0.35rem", justifyContent: "center" }}>
                               {attachments.map(f => (
-                                <span key={f.name} style={{ background: "var(--color-primary-light)", color: "var(--color-primary)", fontSize: "0.75rem", padding: "0.2rem 0.6rem", borderRadius: "999px", fontFamily: "var(--font-body)" }}>
+                                <span key={f.name} style={{ background: "var(--color-primary-light)", color: "var(--color-primary)", fontSize: "0.72rem", padding: "0.15rem 0.5rem", borderRadius: "999px", fontFamily: "var(--font-body)" }}>
                                   {f.name}
                                 </span>
                               ))}
@@ -281,109 +264,103 @@ export default function ReportPage() {
                         </div>
                       </div>
 
-                      <button type="submit" className="btn-primary" disabled={reportLoading} style={{ fontSize: "1rem", padding: "0.75rem" }}>
+                      <button type="submit" className="btn-primary" disabled={reportLoading} style={{ fontSize: "0.925rem", padding: "0.7rem" }}>
                         {reportLoading ? "Submitting…" : "Submit Report"}
                       </button>
-                      <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-text-muted)", textAlign: "center" }}>
-                        You may submit anonymously. No account is required.
+                      <p style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--color-text-muted)", textAlign: "center" }}>
+                        No account required. You may submit anonymously.
                       </p>
                     </form>
-              
                   )}
-                </>
-              )}
-            </>
-          )}
-
-          {/* ════════════════════════ APPOINTMENT TAB ════════════════════════ */}
-          {tab === "appointment" && (
-            <>
-              {apptSubmitted ? (
-                <div className="card" style={{ textAlign: "center", padding: "3rem" }}>
-                  <div style={{ fontSize: "3rem", marginBottom: "1rem" }}></div>
-                  <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.6rem", marginBottom: "0.75rem" }}>Appointment Booked</h2>
-                  <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)" }}>
-                    Your appointment has been confirmed. A confirmation will be sent if you provided contact info.
-                  </p>
-                  <button onClick={() => setApptSubmitted(false)} className="btn-outline" style={{ marginTop: "1.5rem" }}>
-                    Book another
-                  </button>
                 </div>
-              ) : (
-                <>
-                  {/* Anonymous notice */}
-                  <div style={{ background: "var(--color-accent-light)", border: "1px solid #c6eedd", borderRadius: "12px", padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                    <span style={{ fontSize: "1.25rem" }}></span>
-                    <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-                      <strong>Anonymous appointments are available.</strong> If you do not feel safe sharing your identity, 
-                      you may book without creating an account. Toggle the option below.
-                    </p>
-                  </div>
+              )}
+            </div>
 
-                  {/* Mode toggle */}
-                  <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.75rem" }}>
-                    {(["calendar", "ai"] as ApptMode[]).map(m => (
-                      <button
-                        key={m}
-                        onClick={() => setApptMode(m)}
-                        style={{
-                          flex:         1,
-                          padding:      "0.875rem",
-                          borderRadius: "12px",
-                          border:       `2px solid ${apptMode === m ? "var(--color-primary)" : "var(--color-border)"}`,
-                          background:   apptMode === m ? "var(--color-primary-light)" : "var(--color-bg-card)",
-                          cursor:       "pointer",
-                          transition:   "all 0.15s",
-                        }}
-                      >
-                        <div style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.9rem", color: apptMode === m ? "var(--color-primary)" : "var(--color-text-primary)" }}>
-                          {m === "calendar" ? "Pick a time slot" : "Use AI Assistant"}
-                        </div>
-                        <div style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-text-muted)", marginTop: "0.2rem" }}>
-                          {m === "calendar" ? "Browse available times" : "Chat to schedule"}
-                        </div>
+            {/* ── BOOK APPOINTMENT MANUALLY ── */}
+            <div style={{ border: "1px solid var(--color-border)", borderRadius: "16px", overflow: "hidden", background: "var(--color-bg-card)" }}>
+              <button
+                onClick={() => toggleSection("appointment")}
+                style={{
+                  width:        "100%",
+                  padding:      "1.1rem 1.25rem",
+                  display:      "flex",
+                  alignItems:   "center",
+                  justifyContent:"space-between",
+                  background:   "none",
+                  border:       "none",
+                  cursor:       "pointer",
+                  textAlign:    "left",
+                }}
+              >
+                <div>
+                  <p style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.95rem", color: "var(--color-text-primary)" }}>
+                    Book an Appointment
+                  </p>
+                  <p style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "var(--color-text-muted)", marginTop: "0.15rem" }}>
+                    Browse available time slots
+                  </p>
+                </div>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: "1.2rem", color: "var(--color-text-muted)", transform: openSection === "appointment" ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                  ↓
+                </span>
+              </button>
+
+              {openSection === "appointment" && (
+                <div style={{ borderTop: "1px solid var(--color-border)", padding: "1.25rem" }}>
+                  {apptSubmitted ? (
+                    <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+                      <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>📅</div>
+                      <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", marginBottom: "0.5rem" }}>Appointment Booked</h3>
+                      <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>
+                        Your appointment has been confirmed.
+                      </p>
+                      <button onClick={() => setApptSubmitted(false)} className="btn-outline" style={{ marginTop: "1rem", fontSize: "0.85rem" }}>
+                        Book another
                       </button>
-                    ))}
-                  </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-                  {/* ── CALENDAR SLOT PICKER ── */}
-                  {apptMode === "calendar" && (
-                    <div className="card" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                      <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.4rem" }}>Available Appointment Times</h2>
-                      <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-                        In-person appointments at 101 City Hall Plaza, Durham, NC 27701.
+                      <p style={{ fontFamily: "var(--font-body)", fontSize: "0.825rem", color: "var(--color-text-secondary)" }}>
+                        In-person sessions at 101 City Hall Plaza, Durham, NC 27701.
                       </p>
 
                       {/* Slot grid */}
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "0.75rem" }}>
-                        {slots.map(slot => (
-                          <button
-                            key={slot.id}
-                            onClick={() => setSelectedSlot(selectedSlot === slot.id ? null : slot.id)}
-                            style={{
-                              padding:      "0.875rem",
-                              borderRadius: "10px",
-                              border:       `2px solid ${selectedSlot === slot.id ? "var(--color-primary)" : "var(--color-border)"}`,
-                              background:   selectedSlot === slot.id ? "var(--color-primary-light)" : "var(--color-bg-card)",
-                              cursor:       "pointer",
-                              textAlign:    "left",
-                              transition:   "all 0.15s",
-                            }}
-                          >
-                            <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.875rem", color: selectedSlot === slot.id ? "var(--color-primary)" : "var(--color-text-primary)" }}>
-                              {formatSlot(slot.startTime)}
-                            </p>
-                            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.775rem", color: "var(--color-text-muted)", marginTop: "0.2rem" }}>30 min session</p>
-                          </button>
-                        ))}
-                      </div>
+                      {slots.length === 0 ? (
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", color: "var(--color-text-muted)" }}>
+                          No available slots right now. Check back soon or ask the AI assistant above.
+                        </p>
+                      ) : (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.6rem" }}>
+                          {slots.map(slot => (
+                            <button
+                              key={slot.id}
+                              onClick={() => setSelectedSlot(selectedSlot === slot.id ? null : slot.id)}
+                              style={{
+                                padding:      "0.75rem",
+                                borderRadius: "10px",
+                                border:       `2px solid ${selectedSlot === slot.id ? "var(--color-primary)" : "var(--color-border)"}`,
+                                background:   selectedSlot === slot.id ? "var(--color-primary-light)" : "var(--color-bg-card)",
+                                cursor:       "pointer",
+                                textAlign:    "left",
+                                transition:   "all 0.15s",
+                              }}
+                            >
+                              <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "0.82rem", color: selectedSlot === slot.id ? "var(--color-primary)" : "var(--color-text-primary)" }}>
+                                {formatSlot(slot.startTime)}
+                              </p>
+                              <p style={{ fontFamily: "var(--font-body)", fontSize: "0.72rem", color: "var(--color-text-muted)", marginTop: "0.15rem" }}>30 min session</p>
+                            </button>
+                          ))}
+                        </div>
+                      )}
 
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
-                          Reason for appointment (optional)
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                          Reason (optional)
                         </label>
                         <textarea
-                          rows={3}
+                          rows={2}
                           className="form-input"
                           placeholder="Briefly describe why you'd like to meet…"
                           value={apptReason}
@@ -392,16 +369,15 @@ export default function ReportPage() {
                         />
                       </div>
 
-                      {/* Anonymous toggle */}
-                      <label style={{ display: "flex", alignItems: "center", gap: "0.6rem", cursor: "pointer" }}>
+                      <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
                         <input
                           type="checkbox"
                           checked={apptAnon}
                           onChange={e => setApptAnon(e.target.checked)}
-                          style={{ width: "16px", height: "16px", accentColor: "var(--color-primary)" }}
+                          style={{ width: "15px", height: "15px", accentColor: "var(--color-primary)" }}
                         />
-                        <span style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-                          Book anonymously — do not attach my account to this appointment
+                        <span style={{ fontFamily: "var(--font-body)", fontSize: "0.825rem", color: "var(--color-text-secondary)" }}>
+                          Book anonymously
                         </span>
                       </label>
 
@@ -409,21 +385,22 @@ export default function ReportPage() {
                         className="btn-primary"
                         disabled={!selectedSlot}
                         onClick={handleApptSubmit}
-                        style={{ fontSize: "1rem", padding: "0.75rem", opacity: selectedSlot ? 1 : 0.5 }}
+                        style={{ fontSize: "0.925rem", padding: "0.7rem", opacity: selectedSlot ? 1 : 0.5 }}
                       >
                         Confirm Appointment
                       </button>
                     </div>
                   )}
-                </>
+                </div>
               )}
-            </>
-          )}
-        </div>
+            </div>
 
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
-            SpeakEqual · North Carolina Central University
+          </div>
+        </section>
+
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>
+            Speak Equal
           </p>
         </footer>
       </main>

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "./components/navbar";
+import ChatBox from "./components/Chatbot";
 
 export default function HomePage() {
   return (
@@ -9,7 +12,7 @@ export default function HomePage() {
 
         {/* ── HERO ── */}
         <section style={{
-          background:    "linear-gradient(135deg, #7B1C1C 0%, #5e1515 60%, #7B1C1C 100%)",
+          background:    "linear-gradient(135deg, #1E1A16 0%, #2C2118 60%, #1E1A16 100%)",
           padding:       "6rem 1.5rem 5rem",
           textAlign:     "center",
           position:      "relative",
@@ -56,7 +59,7 @@ export default function HomePage() {
         </section>
 
         {/* ── PROTECTED CLASSES STRIP ── */}
-        <section style={{ background: "var(--color-primary-light)", borderTop: "1px solid #dbe8f8", borderBottom: "1px solid #dbe8f8", padding: "1.25rem 1.5rem", overflowX: "auto" }}>
+        <section style={{ background: "var(--color-primary-light)", borderTop: "1px solid var(--color-border)", borderBottom: "1px solid var(--color-border)", padding: "1.25rem 1.5rem", overflowX: "auto" }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
             <span style={{ fontFamily: "var(--font-body)", fontSize: "0.88rem", fontWeight: 700, color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap", marginRight: "0.5rem" }}>
               Protected classes:
@@ -73,6 +76,20 @@ export default function HomePage() {
               }}>{c}</span>
             ))}
           </div>
+        </section>
+
+        {/* ── AI ADVOCATE SECTION ── */}
+        <section style={{ maxWidth: "960px", margin: "0 auto", padding: "4rem 1.5rem 0" }}>
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+            <span className="section-label">AI Advocate</span>
+            <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.5rem, 3vw, 2.1rem)", marginTop: "0.5rem", marginBottom: "0.6rem" }}>
+              We&apos;re Here to Listen
+            </h2>
+            <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", fontSize: "0.95rem", maxWidth: "520px", margin: "0 auto", lineHeight: 1.7 }}>
+              Ask any question about your rights, file a report, or book an appointment — all through a conversation. No forms, no pressure, no account required.
+            </p>
+          </div>
+          <ChatBox mode="general" />
         </section>
 
         {/* ── HOW IT WORKS ── */}
@@ -132,12 +149,12 @@ export default function HomePage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer style={{ background: "#7B1C1C", color: "rgba(255,255,255,0.7)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem" }}>
-            SpeakEqual · North Carolina Central University
+        <footer style={{ background: "#1E1A16", color: "rgba(255,255,255,0.65)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-heading)", fontSize: "1rem", color: "rgba(255,255,255,0.85)", marginBottom: "0.75rem" }}>
+            Speak Equal
           </p>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", marginTop: "0.5rem", color: "rgba(255,255,255,0.45)" }}>
-            Disclaimer: This is a student project created for educational purposes as part of a university capstone course. As of right now it is not an official platform of the Speak Equal . For official reporting and resources, please visit the Durham HRC website or contact them directly. This website is free for any to browse and learn more about discrimination rights within the city of Durham, however if you are not a resident of Durham, NC you cannot submit a formal report. 
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", maxWidth: "640px", margin: "0 auto", lineHeight: 1.7 }}>
+            Disclaimer: This is a capstone project created for educational purposes. It is not an official platform. For official reporting and resources, please contact the Durham Human Relations Commission directly. Reports may only be submitted by Durham, NC residents.
           </p>
         </footer>
       </main>

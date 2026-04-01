@@ -1,6 +1,5 @@
 import Navbar from "../components/navbar";
 
-// ── Update these with your real team info ──
 const team = [
   { name: "Corey Little", role: "Project Manager", bio: "Bio" },
   { name: "Savion Brown", role: "Lead Developer", bio: "Bio" },
@@ -28,8 +27,7 @@ export default function AboutPage() {
             Built by our Community, for our Community
           </h1>
           <p style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.8)", maxWidth: "580px", margin: "0 auto", fontSize: "1rem", lineHeight: 1.7 }}>
-            This platform was developed as a capstone project to modernize how Durham residents access
-            discrimination reporting and Human Relations  services.
+            Speak Equal is an independent platform dedicated to empowering residents, facilitating in-person advocacy appointments, and making civil rights education accessible to everyone.
           </p>
         </section>
 
@@ -45,7 +43,7 @@ export default function AboutPage() {
               Durham Committee on the Affairs of Black People Inc. (DCABP Inc.) is a 501(c)(3) nonprofit community-based organization established in 2014. DCABP Inc. has stood at the forefront to champion Social Justice and Racial Equity (SJ/RE) since its inception. DCABP Inc. initiatives prioritize focus areas in Civic, Economic, Health, Housing, and Youth/Education. They are supported by dedicated staff, college student interns, and volunteers such as ourselves.  
             </p>
             <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", lineHeight: 1.75 }}>
-              Speak Equal is bridging the divide within our community between acess and 
+              Speak Equal is bridging the gap between community members and the resources they need to assert their civil rights. We serve as a neutral, independent facilitator connecting residents with trained advocates through a secure and accessible platform.
             </p>
           </div>
 
@@ -61,7 +59,7 @@ export default function AboutPage() {
             <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", lineHeight: 1.75 }}>
               The platform includes an AI-powered assistant trained on Durham's discrimination laws and
               protected classes, a traditional form-based reporting path, a built-in appointment scheduler,
-              and an admin dashboard for the Human Relations  team to manage submissions.
+              and an admin dashboard for Speak Equal advocates to manage submissions and appointments.
             </p>
           </div>
 

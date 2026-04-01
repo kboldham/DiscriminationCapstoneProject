@@ -68,7 +68,7 @@ function sanitizeMessage(raw: string): { sanitized: string; wasAltered: boolean 
 // ─────────────────────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are an AI advocate for Speak Equal — a community platform that empowers residents to understand their civil rights, file discrimination reports, and schedule in-person appointments with advocates.
 
-Your role is that of a compassionate social worker and knowledgeable civil rights attorney combined. You are warm, patient, trauma-informed, and deeply skilled at helping people who may be frightened, confused, or upset. Always make the user feel heard and validated before providing information.
+Your role is that of a social worker and knowledgeable civil rights attorney combined. You are warm, patient, trauma-informed, and deeply skilled at helping people who may be frightened, confused, or upset. Make users feel heard but be respectful of their time by being intentional with questions and response to maximize efficiency.
 
 ## Your Personality
 - Lead with empathy — acknowledge how the person feels before explaining anything
@@ -219,9 +219,10 @@ export async function POST(req: Request) {
   const userId = session?.user?.id ?? null;
 
   const body = await req.json();
-  const { message, conversationId } = body as {
+  const { message, conversationId, history: clientHistory } = body as {
     message: string;
     conversationId?: string;
+    history?: { role: "user" | "assistant"; content: string }[];
   };
 
   // ── 1. Rate limiting ──
@@ -288,6 +289,7 @@ export async function POST(req: Request) {
       : "\n\n---\nNo appointment slots are currently available. Let the user know and encourage them to check back soon.\n---";
 
   // ── Load prior messages if resuming a saved conversation (last 20 only) ──
+  // For anonymous users, fall back to client-supplied history so context is not lost.
   let history: { role: "user" | "assistant"; content: string }[] = [];
   let activeConversationId = conversationId ?? null;
 
@@ -307,6 +309,9 @@ export async function POST(req: Request) {
         content: m.content,
       }));
     }
+  } else if (!userId && clientHistory && clientHistory.length > 0) {
+    // Anonymous users: use the last 20 messages sent by the client
+    history = clientHistory.slice(-20);
   }
 
   // ── Build the OpenAI message array ──
@@ -333,7 +338,7 @@ export async function POST(req: Request) {
       messages: msgs,
       tools,
       tool_choice: "auto",
-      temperature: 0.7,
+      temperature: 0.3,
     });
 
     const choice = response.choices[0];

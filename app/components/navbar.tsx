@@ -6,11 +6,13 @@ import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 
 const navLinks = [
-  { href: "/",        label: "Home"    },
-  { href: "/educate", label: "Learn More" },
-  { href: "/report",  label: "Report"  },
-  //{ href: "/resources",   label: "Resources"   },
-  { href: "/about",   label: "About Us"   },
+  { href: "/",                              label: "Home"                  },
+  { href: "/educate#employment",            label: "Employment"            },
+  { href: "/educate#housing",               label: "Housing"               },
+  { href: "/educate#public-accommodations", label: "Public Accommodations" },
+  { href: "/educate#protected-classes",     label: "Protected Classes"     },
+  { href: "/report",                        label: "File a Report"                },
+  { href: "/about",                         label: "About Us"              },
 ];
 
 export default function Navbar() {

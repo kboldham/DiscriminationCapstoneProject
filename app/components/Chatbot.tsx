@@ -56,12 +56,13 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
   const [slotBooked, setSlotBooked]           = useState(false);
   const [reportCreated, setReportCreated]     = useState(false);
 
-  const bottomRef  = useRef<HTMLDivElement>(null);
+  const scrollRef  = useRef<HTMLDivElement>(null);
   const inputRef   = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to bottom on new messages
+  // Scroll within the chat container only — never shift the page
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
 
   // Load past conversations if logged in
@@ -105,10 +106,16 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
     setLoading(true);
 
     try {
+      // For anonymous users (no conversationId), send recent message history so
+      // the backend has context — it doesn't persist messages for anon sessions.
+      const historyPayload = !session?.user?.id
+        ? messages.slice(-20).map(m => ({ role: m.role, content: m.content }))
+        : undefined;
+
       const res = await fetch("/api/chat", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ message: userMessage, conversationId }),
+        body:    JSON.stringify({ message: userMessage, conversationId, history: historyPayload }),
       });
 
       const data = await res.json();
@@ -267,7 +274,7 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
         )}
 
         {/* Messages */}
-        <div style={{
+        <div ref={scrollRef} style={{
           padding:        "1.25rem",
           minHeight:      "320px",
           maxHeight:      "480px",
@@ -349,7 +356,6 @@ export default function ChatBox({ mode = "general" }: ChatBoxProps) {
             </div>
           )}
 
-          <div ref={bottomRef} />
         </div>
 
         {/* Slot Picker */}

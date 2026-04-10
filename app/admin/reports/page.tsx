@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -47,7 +47,7 @@ const TYPE_LABELS: Record<string, string> = {
   familial_status: "Familial Status", veteran_status: "Veteran Status",
 };
 
-export default function AdminReportsPage() {
+function AdminReportsContent() {
   const { data: session, status } = useSession();
   const router       = useRouter();
   const searchParams = useSearchParams();
@@ -275,5 +275,13 @@ export default function AdminReportsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function AdminReportsPage() {
+  return (
+    <Suspense>
+      <AdminReportsContent />
+    </Suspense>
   );
 }

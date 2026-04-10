@@ -69,7 +69,12 @@ export default function SignInPage() {
             />
           </div>
           <div>
-            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Password</label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.4rem" }}>
+              <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600 }}>Password</label>
+              <Link href="/auth/forgot-password" style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "var(--color-primary)", textDecoration: "none" }}>
+                Forgot password?
+              </Link>
+            </div>
             <input
               type="password"
               required

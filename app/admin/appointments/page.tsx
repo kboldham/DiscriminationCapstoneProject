@@ -74,16 +74,17 @@ export default function AdminAppointmentsPage() {
       {/* Sidebar */}
       <aside style={{ width: "220px", background: "#0A1628", borderRight: "1px solid #1E293B", padding: "1.5rem 0", flexShrink: 0 }}>
         <div style={{ padding: "0 1.25rem 1.5rem", borderBottom: "1px solid #1E293B" }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>Durham HRC</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>Speak Equal</div>
           <div style={{ fontSize: "0.72rem", color: "#64748B", marginTop: "0.2rem" }}>Admin Portal</div>
         </div>
         <nav style={{ padding: "1rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           {[
-            { href: "/admin",              icon: "", label: "Dashboard"       },
-            { href: "/admin/reports",      icon: "", label: "Reports"        },
-            { href: "/admin/appointments", icon: "", label: "Appointments", active: true },
-            { href: "/admin/slots",        icon: "", label: "Time Slots"     },
-          ].map(({ href, icon, label, active }) => (
+            { href: "/admin",              label: "Dashboard",    active: false },
+            { href: "/admin/reports",      label: "Reports",      active: false },
+            { href: "/admin/appointments", label: "Appointments", active: true  },
+            { href: "/admin/slots",        label: "Time Slots",   active: false },
+            { href: "/admin/users",        label: "Users",        active: false },
+          ].map(({ href, label, active }) => (
             <Link key={href} href={href} style={{
               display: "flex", alignItems: "center", gap: "0.6rem",
               padding: "0.55rem 0.75rem", borderRadius: "8px",
@@ -91,7 +92,7 @@ export default function AdminAppointmentsPage() {
               background: active ? "#1E293B" : "transparent",
               textDecoration: "none", fontSize: "0.875rem",
             }}>
-              <span>{icon}</span> {label}
+              {label}
             </Link>
           ))}
         </nav>

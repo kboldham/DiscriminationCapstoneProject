@@ -48,11 +48,12 @@ export default async function AdminDashboard() {
           </div>
           <nav style={{ padding: "1rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
             {[
-              { href: "/admin",              icon: "", label: "Dashboard"    },
-              { href: "/admin/reports",      icon: "", label: "Reports"     },
-              { href: "/admin/appointments", icon: "", label: "Appointments"},
-              { href: "/admin/slots",        icon: "", label: "Time Slots"  },
-            ].map(({ href, icon, label }) => (
+              { href: "/admin",              label: "Dashboard"    },
+              { href: "/admin/reports",      label: "Reports"      },
+              { href: "/admin/appointments", label: "Appointments" },
+              { href: "/admin/slots",        label: "Time Slots"   },
+              { href: "/admin/users",        label: "Users"        },
+            ].map(({ href, label }) => (
               <Link key={href} href={href} style={{
                 display:      "flex",
                 alignItems:   "center",
@@ -65,7 +66,7 @@ export default async function AdminDashboard() {
                 transition:   "all 0.15s",
               }}
               >
-                <span>{icon}</span> {label}
+                {label}
               </Link>
             ))}
           </nav>
@@ -181,12 +182,11 @@ export default async function AdminDashboard() {
 
           
           <div style={{ background: "#1E293B", border: "1px solid #334155", borderRadius: "16px", padding: "1.5rem", marginTop: "1.5rem" }}>
-            <h2 style={{ fontFamily: "var(--font-heading)", color: "#F1F5F9", fontSize: "1.1rem", marginBottom: "1rem" }}>Admin Management</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-              {["Password Reset", "User Managment", "Coming Soon"].map(c => (
-                <span key={c} style={{ background: "#0F172A", color: "#94A3B8", fontSize: "0.78rem", padding: "0.3rem 0.75rem", borderRadius: "999px", border: "1px solid #334155" }}>{c}</span>
-              ))}
-            </div>
+            <h2 style={{ fontFamily: "var(--font-heading)", color: "#F1F5F9", fontSize: "1.1rem", marginBottom: "0.5rem" }}>Admin Management</h2>
+            <p style={{ color: "#64748B", fontSize: "0.825rem", marginBottom: "1rem" }}>Manage user accounts, roles, and password resets.</p>
+            <Link href="/admin/users" style={{ display: "inline-block", background: "#1E3A5F", color: "#60A5FA", border: "1px solid #2563EB", borderRadius: "8px", padding: "0.4rem 1rem", fontSize: "0.825rem", textDecoration: "none", fontWeight: 600 }}>
+              Manage Users
+            </Link>
           </div>
 
         </div>

@@ -31,9 +31,21 @@ export default function ReportPage() {
   // Which manual section is open (null = both collapsed)
   const [openSection, setOpenSection] = useState<"report" | "appointment" | null>(null);
 
-  // Report form state
+  // Report form state — core fields
   const [reportForm, setReportForm] = useState({ incidentDate: "", discriminationType: "", description: "" });
-  const [attachments, setAttachments]       = useState<File[]>([]);
+  const [category, setCategory]         = useState("");
+  // Complainant contact (all optional)
+  const [firstName, setFirstName]       = useState("");
+  const [lastName, setLastName]         = useState("");
+  const [phone, setPhone]               = useState("");
+  const [address, setAddress]           = useState("");
+  const [zipCode, setZipCode]           = useState("");
+  // Respondent info (all optional)
+  const [respondentName, setRespondentName]         = useState("");
+  const [respondentAddress, setRespondentAddress]   = useState("");
+  const [respondentPhone, setRespondentPhone]       = useState("");
+
+  const [attachments, setAttachments]         = useState<File[]>([]);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [reportLoading, setReportLoading]     = useState(false);
 
@@ -62,7 +74,19 @@ export default function ReportPage() {
       await fetch("/api/reports", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...reportForm, attachments: uploadedAttachments }),
+        body: JSON.stringify({
+          ...reportForm,
+          category,
+          firstName:         firstName         || null,
+          lastName:          lastName          || null,
+          phone:             phone             || null,
+          address:           address           || null,
+          zipCode:           zipCode           || null,
+          respondentName:    respondentName    || null,
+          respondentAddress: respondentAddress || null,
+          respondentPhone:   respondentPhone   || null,
+          attachments: uploadedAttachments,
+        }),
       });
       setReportSubmitted(true);
     } catch (err) {
@@ -190,54 +214,142 @@ export default function ReportPage() {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleReportSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    <form onSubmit={handleReportSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+
+                      {/* ── Section 1: Your Contact Info ── */}
                       <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
-                          Date of Incident *
-                        </label>
-                        <input
-                          type="datetime-local"
-                          required
-                          className="form-input"
-                          value={reportForm.incidentDate}
-                          onChange={e => setReportForm(f => ({ ...f, incidentDate: e.target.value }))}
-                        />
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.25rem" }}>
+                          Your Contact Information
+                        </p>
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>
+                          All fields are optional. You may submit this report anonymously.
+                        </p>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>First Name</label>
+                            <input type="text" className="form-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jane" />
+                          </div>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Last Name</label>
+                            <input type="text" className="form-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Doe" />
+                          </div>
+                        </div>
+                        <div style={{ marginTop: "0.75rem" }}>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Phone</label>
+                          <input type="tel" className="form-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(555) 000-0000" />
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "0.75rem", marginTop: "0.75rem" }}>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Street Address</label>
+                            <input type="text" className="form-input" value={address} onChange={e => setAddress(e.target.value)} placeholder="123 Main St" />
+                          </div>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Zip Code</label>
+                            <input type="text" className="form-input" value={zipCode} onChange={e => setZipCode(e.target.value)} placeholder="27701" />
+                          </div>
+                        </div>
                       </div>
 
-                      <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
-                          Type of Discrimination *
-                        </label>
-                        <select
-                          required
-                          className="form-input"
-                          value={reportForm.discriminationType}
-                          onChange={e => setReportForm(f => ({ ...f, discriminationType: e.target.value }))}
-                        >
-                          <option value="">Select a protected class…</option>
-                          {DISCRIMINATION_TYPES.map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
-                          ))}
-                        </select>
+                      {/* ── Section 2: Respondent Info ── */}
+                      <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.25rem" }}>
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.25rem" }}>
+                          Who Is This Complaint Against?
+                        </p>
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>
+                          The business, employer, landlord, or individual. All fields are optional.
+                        </p>
+                        <div>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Name</label>
+                          <input type="text" className="form-input" value={respondentName} onChange={e => setRespondentName(e.target.value)} placeholder="Business or person name" />
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "0.75rem", marginTop: "0.75rem" }}>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Address</label>
+                            <input type="text" className="form-input" value={respondentAddress} onChange={e => setRespondentAddress(e.target.value)} placeholder="123 Main St" />
+                          </div>
+                          <div>
+                            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.3rem" }}>Phone</label>
+                            <input type="tel" className="form-input" value={respondentPhone} onChange={e => setRespondentPhone(e.target.value)} placeholder="(555) 000-0000" />
+                          </div>
+                        </div>
                       </div>
 
-                      <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
-                          Description *
-                        </label>
-                        <textarea
-                          required
-                          rows={4}
-                          className="form-input"
-                          placeholder="Describe what happened, including any relevant context…"
-                          value={reportForm.description}
-                          onChange={e => setReportForm(f => ({ ...f, description: e.target.value }))}
-                          style={{ resize: "vertical" }}
-                        />
+                      {/* ── Section 3: About the Incident ── */}
+                      <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.25rem" }}>
+                        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>
+                          About the Incident
+                        </p>
+
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                            Category *
+                          </label>
+                          <select
+                            required
+                            className="form-input"
+                            value={category}
+                            onChange={e => setCategory(e.target.value)}
+                          >
+                            <option value="">Select a category…</option>
+                            <option value="employment">Employment</option>
+                            <option value="fair_housing">Fair Housing</option>
+                            <option value="public_accommodations">Public Accommodations</option>
+                            <option value="other">Other (Education, Voting, Credit, Government Services, etc.)</option>
+                          </select>
+                        </div>
+
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                            Protected Class *
+                          </label>
+                          <select
+                            required
+                            className="form-input"
+                            value={reportForm.discriminationType}
+                            onChange={e => setReportForm(f => ({ ...f, discriminationType: e.target.value }))}
+                          >
+                            <option value="">Select the protected class that applies…</option>
+                            {DISCRIMINATION_TYPES.map(({ value, label }) => (
+                              <option key={value} value={value}>{label}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                            Date of Incident *
+                          </label>
+                          <input
+                            type="datetime-local"
+                            required
+                            className="form-input"
+                            value={reportForm.incidentDate}
+                            onChange={e => setReportForm(f => ({ ...f, incidentDate: e.target.value }))}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.2rem" }}>
+                            Description *
+                          </label>
+                          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.76rem", color: "var(--color-text-muted)", marginBottom: "0.4rem", lineHeight: 1.5 }}>
+                            Include: what adverse action occurred (e.g., denied housing, fired, refused service), why you believe your protected class was a factor, and why you were qualified (e.g., met credit requirements, had the required experience).
+                          </p>
+                          <textarea
+                            required
+                            rows={5}
+                            className="form-input"
+                            placeholder="Describe what happened in your own words…"
+                            value={reportForm.description}
+                            onChange={e => setReportForm(f => ({ ...f, description: e.target.value }))}
+                            style={{ resize: "vertical" }}
+                          />
+                        </div>
                       </div>
 
-                      <div>
-                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.82rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
+                      {/* ── Section 4: Attachments ── */}
+                      <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.25rem" }}>
+                        <label style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
                           Supporting Evidence (optional)
                         </label>
                         <div style={{ border: "2px dashed var(--color-border)", borderRadius: "10px", padding: "1rem", textAlign: "center", background: "var(--color-bg-muted)" }}>

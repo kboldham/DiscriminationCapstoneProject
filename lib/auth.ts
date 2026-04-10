@@ -3,6 +3,7 @@ import { compare } from "bcryptjs";
 import { NextAuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { checkLoginRateLimit } from "@/lib/ratelimit";
 
 // Extend the built-in session/token types to carry the user ID
 declare module "next-auth" {
@@ -40,7 +41,15 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
+        const ip =
+          (req?.headers?.["x-forwarded-for"] as string | undefined)?.split(",")[0].trim()
+          ?? (req?.headers?.["x-real-ip"] as string | undefined)
+          ?? "unknown";
+
+        const rl = checkLoginRateLimit(ip);
+        if (!rl.allowed) return null; // NextAuth surfaces this as "CredentialsSignin"
+
         const email =
           typeof credentials?.email === "string" ? credentials.email : "";
         const password =
@@ -68,11 +77,22 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // On sign-in `user` is populated; persist fields into the JWT
+      // On sign-in `user` is populated; persist the id into the JWT.
       if (user) {
         token.id = user.id;
-        token.role = user.role;
       }
+
+      // Re-fetch the role from the database on every token refresh so that
+      // role changes (promotion / demotion) take effect without requiring a
+      // sign-out. The extra query is lightweight — id is the primary key.
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where:  { id: token.id as string },
+          select: { role: true },
+        });
+        token.role = dbUser?.role ?? "user";
+      }
+
       return token;
     },
     async session({ session, token }) {

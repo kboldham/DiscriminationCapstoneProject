@@ -1,9 +1,22 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { checkRegisterRateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+             ?? req.headers.get("x-real-ip")
+             ?? "unknown";
+
+    const rl = checkRegisterRateLimit(ip);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { name, email, password } = body;
 

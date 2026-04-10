@@ -3,15 +3,18 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// POST: manual form submission
+// POST: manual form submission (anonymous submissions are allowed)
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const userId = session?.user?.id ?? null;
 
   const body = await req.json();
-  const { incidentDate, discriminationType, description, attachments } = body;
+  const {
+    incidentDate, discriminationType, description, attachments,
+    category,
+    firstName, lastName, phone, address, zipCode,
+    respondentName, respondentAddress, respondentPhone,
+  } = body;
   // attachments = [{ fileName, fileUrl, fileType }] — uploaded separately, URLs passed here
 
   if (!incidentDate || !discriminationType || !description) {
@@ -20,11 +23,20 @@ export async function POST(req: Request) {
 
   const report = await prisma.report.create({
     data: {
-      userId: session.user.id,
+      userId,
       source: "form",
       incidentDate: new Date(incidentDate),
       discriminationType,
+      category:          category          ?? null,
       description,
+      firstName:         firstName         ?? null,
+      lastName:          lastName          ?? null,
+      phone:             phone             ?? null,
+      address:           address           ?? null,
+      zipCode:           zipCode           ?? null,
+      respondentName:    respondentName    ?? null,
+      respondentAddress: respondentAddress ?? null,
+      respondentPhone:   respondentPhone   ?? null,
       attachments: attachments?.length
         ? { create: attachments.map((a: { fileName: string; fileUrl: string; fileType: string }) => ({
             fileName: a.fileName,

@@ -11,7 +11,7 @@ import ChatBox from "./components/Chatbot";
 // use the gradient fallback.
 const SLIDES = [
   {
-    image: null as string | null,
+    image: "/images/mural.jpg" as string | null,
     bg: "linear-gradient(135deg, #1E1A16 0%, #2C2118 60%, #1E1A16 100%)",
     label: "Speak Equal",
     heading: "You Have the Right\nto Be Treated Fairly",
@@ -20,7 +20,7 @@ const SLIDES = [
     secondary: { label: "Know Your Rights", href: "/educate" },
   },
   {
-    image: null as string | null,
+    image: "/images/people.png" as string | null,
     bg: "linear-gradient(135deg, #1A1624 0%, #221833 60%, #1A1624 100%)",
     label: "In-Person Advocacy",
     heading: "Meet With an\nAdvocate Today",
@@ -29,7 +29,7 @@ const SLIDES = [
     secondary: { label: "Learn How It Works", href: "/about" },
   },
   {
-    image: null as string | null,
+    image: "/images/skyline.jpg" as string | null,
     bg: "linear-gradient(135deg, #161E1A 0%, #182C22 60%, #161E1A 100%)",
     label: "Know Your Rights",
     heading: "11 Protected Classes.\nOne Platform.",
@@ -105,15 +105,14 @@ export default function HomePage() {
         {/* HERO SLIDESHOW */}
         <section
           style={{
-            backgroundImage: slide.image ? `url(${slide.image})` : undefined,
-            background:      slide.image ? undefined : slide.bg,
-            backgroundSize:  "cover",
+            backgroundImage:    slide.image ? `url(${slide.image})` : slide.bg,
+            backgroundColor:    "#1E1A16",
+            backgroundSize:     "cover",
             backgroundPosition: "center",
-            padding:         "6rem 1.5rem 5rem",
-            textAlign:       "center",
-            position:        "relative",
-            overflow:        "hidden",
-            transition:      "background 0.6s ease",
+            padding:            "6rem 1.5rem 5rem",
+            textAlign:          "center",
+            position:           "relative",
+            overflow:           "hidden",
           }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
@@ -277,7 +276,7 @@ export default function HomePage() {
         </section>
 
         {/* SAFETY AND PRIVACY */}
-        <section style={{ background: "var(--color-accent-light)", borderTop: "1px solid #c6eedd", borderBottom: "1px solid #c6eedd", padding: "3rem 1.5rem", marginTop: "4rem" }}>
+        <section style={{ background: "var(--color-accent-light)", borderTop: "1px solid var(--color-border)", borderBottom: "1px solid var(--color-border)", padding: "3rem 1.5rem", marginTop: "4rem" }}>
           <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center" }}>
             <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.6rem", marginBottom: "0.75rem", color: "var(--color-text-primary)" }}>
               Your Safety and Privacy is our Top Priority

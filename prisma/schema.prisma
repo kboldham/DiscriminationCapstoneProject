@@ -12,8 +12,10 @@ model User {
   email          String        @unique
   name           String?
   hashedPassword String
-  role           String        @default("user") // "user" | "admin"
-  createdAt      DateTime      @default(now())
+  role             String        @default("user") // "user" | "admin"
+  createdAt        DateTime      @default(now())
+  resetToken       String?       @unique
+  resetTokenExpiry DateTime?
 
   reports        Report[]
   conversations  Conversation[]
@@ -26,13 +28,27 @@ model Report {
   user               User?        @relation(fields: [userId], references: [id])
 
   incidentDate       DateTime
-  // One of Durham's 11 protected classes:
+  // One of 11 protected classes:
   // race | color | religion | sex | national_origin | age |
   // disability | sexual_orientation | gender_identity | familial_status | veteran_status
   discriminationType String
+  // Discrimination category: "employment" | "fair_housing" | "public_accommodations" | "other"
+  category           String?
   description        String       @db.Text
   status             String       @default("pending") // "pending" | "reviewing" | "resolved"
   source             String       @default("form")    // "form" | "ai"
+
+  // Complainant contact info (all optional — anonymous filing supported)
+  firstName          String?
+  lastName           String?
+  phone              String?
+  address            String?
+  zipCode            String?
+
+  // Respondent info (business, landlord, employer, or individual)
+  respondentName     String?
+  respondentAddress  String?
+  respondentPhone    String?
 
   attachments        Attachment[]
   conversationId     String?

@@ -8,8 +8,8 @@
   --color-primary:        #C4782A;
   --color-primary-hover:  #AD6822;
   --color-primary-light:  #FBF3E8;
-  --color-accent:         #3D7A5C;
-  --color-accent-light:   #EBF5EE;
+  --color-accent:         #8B7355;
+  --color-accent-light:   #FBF3E8;
   --color-bg-base:        #FAFAF8;
   --color-bg-card:        #FFFFFF;
   --color-bg-muted:       #F5F2ED;
@@ -99,7 +99,7 @@ h1, h2, h3, h4 {
   text-decoration: none;
 }
 .btn-accent:hover {
-  background-color: #2E6449;
+  background-color: #7A6345;
 }
 
 .card {
@@ -150,3 +150,12 @@ h1, h2, h3, h4 {
 .status-pending  { background: #FEF3C7; color: #92400E; }
 .status-reviewing{ background: #DBEAFE; color: #1E40AF; }
 .status-resolved { background: #D1FAE5; color: #065F46; }
+
+.social-link {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  transition: color 0.15s;
+}
+.social-link--linkedin:hover { color: #0A66C2; }
+.social-link--github:hover   { color: var(--color-text-primary); }

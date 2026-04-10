@@ -172,7 +172,12 @@ export default function EducatePage() {
     if (hash) {
       const el = document.getElementById(hash);
       if (el) {
-        setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+        setTimeout(() => {
+          // Account for sticky navbar (64px) + sticky subnav (~49px)
+          const offset = 120;
+          const y = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }, 150);
         // If it's a protected class id, open that card
         if (PROTECTED_CLASSES.find(c => c.id === hash)) {
           setActiveClass(hash);
@@ -238,7 +243,7 @@ export default function EducatePage() {
         <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem 4rem" }}>
 
           {/* EMPLOYMENT */}
-          <section id="employment" ref={el => { sectionRefs.current.employment = el; }} style={{ paddingTop: "3.5rem" }}>
+          <section id="employment" ref={el => { sectionRefs.current.employment = el; }} style={{ paddingTop: "3.5rem", scrollMarginTop: "120px" }}>
             <div style={{ marginBottom: "2rem" }}>
               <span className="section-label" style={{ display: "block", marginBottom: "0.5rem" }}>Employment</span>
               <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0.75rem" }}>
@@ -302,7 +307,7 @@ export default function EducatePage() {
           <hr style={{ border: "none", borderTop: "1px solid var(--color-border)", margin: "4rem 0 0" }} />
 
           {/* HOUSING */}
-          <section id="housing" ref={el => { sectionRefs.current.housing = el; }} style={{ paddingTop: "3.5rem" }}>
+          <section id="housing" ref={el => { sectionRefs.current.housing = el; }} style={{ paddingTop: "3.5rem", scrollMarginTop: "120px" }}>
             <div style={{ marginBottom: "2rem" }}>
               <span className="section-label" style={{ display: "block", marginBottom: "0.5rem" }}>Housing</span>
               <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0.75rem" }}>
@@ -366,7 +371,7 @@ export default function EducatePage() {
           <hr style={{ border: "none", borderTop: "1px solid var(--color-border)", margin: "4rem 0 0" }} />
 
           {/* PUBLIC ACCOMMODATIONS */}
-          <section id="public-accommodations" ref={el => { sectionRefs.current["public-accommodations"] = el; }} style={{ paddingTop: "3.5rem" }}>
+          <section id="public-accommodations" ref={el => { sectionRefs.current["public-accommodations"] = el; }} style={{ paddingTop: "3.5rem", scrollMarginTop: "120px" }}>
             <div style={{ marginBottom: "2rem" }}>
               <span className="section-label" style={{ display: "block", marginBottom: "0.5rem" }}>Public Accommodations</span>
               <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0.75rem" }}>
@@ -430,7 +435,7 @@ export default function EducatePage() {
           <hr style={{ border: "none", borderTop: "1px solid var(--color-border)", margin: "4rem 0 0" }} />
 
           {/* PROTECTED CLASSES */}
-          <section id="protected-classes" ref={el => { sectionRefs.current["protected-classes"] = el; }} style={{ paddingTop: "3.5rem" }}>
+          <section id="protected-classes" ref={el => { sectionRefs.current["protected-classes"] = el; }} style={{ paddingTop: "3.5rem", scrollMarginTop: "120px" }}>
             <div style={{ marginBottom: "2rem" }}>
               <span className="section-label" style={{ display: "block", marginBottom: "0.5rem" }}>Protected Classes</span>
               <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0.75rem" }}>

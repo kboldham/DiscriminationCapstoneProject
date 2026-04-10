@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendAppointmentConfirmationEmail, sendAppointmentStatusEmail } from "@/lib/email";
 
 // GET: available future slots
 export async function GET() {
@@ -39,8 +40,9 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // TODO: swap this for a real email provider (Resend, SendGrid, Nodemailer)
-  console.log(`[EMAIL] Booking confirmation to ${session.user.email} for slot ${slotId}`);
+  if (session.user.email) {
+    sendAppointmentConfirmationEmail(session.user.email, slot.startTime, reason ?? null).catch(console.error);
+  }
 
   return NextResponse.json(appointment);
 }
@@ -56,7 +58,8 @@ export async function PATCH(req: Request) {
   // action: "cancel" | "reschedule"
 
   const appointment = await prisma.appointment.findUnique({
-    where: { id: appointmentId },
+    where:   { id: appointmentId },
+    include: { slot: true },
   });
 
   if (!appointment || appointment.userId !== session.user.id) {
@@ -68,7 +71,9 @@ export async function PATCH(req: Request) {
       prisma.timeSlot.update({ where: { id: appointment.slotId }, data: { isBooked: false } }),
       prisma.appointment.update({ where: { id: appointmentId }, data: { status: "cancelled" } }),
     ]);
-    console.log(`[EMAIL] Cancellation notice to ${session.user.email}`);
+    if (session.user.email) {
+      sendAppointmentStatusEmail(session.user.email, appointment.slot.startTime, "cancelled").catch(console.error);
+    }
     return NextResponse.json({ success: true });
   }
 
@@ -89,7 +94,9 @@ export async function PATCH(req: Request) {
         data: { slotId: newSlotId, status: "scheduled" },
       }),
     ]);
-    console.log(`[EMAIL] Reschedule notice to ${session.user.email}`);
+    if (session.user.email) {
+      sendAppointmentStatusEmail(session.user.email, newSlot.startTime, "scheduled").catch(console.error);
+    }
     return NextResponse.json({ success: true });
   }
 

@@ -16,11 +16,20 @@ interface Report {
   status:             string;
   source:             string;
   discriminationType: string;
+  category:           string | null;
   description:        string;
   incidentDate:       string;
   createdAt:          string;
   attachments:        Attachment[];
   user:               { name: string | null; email: string };
+  firstName:          string | null;
+  lastName:           string | null;
+  phone:              string | null;
+  address:            string | null;
+  zipCode:            string | null;
+  respondentName:     string | null;
+  respondentAddress:  string | null;
+  respondentPhone:    string | null;
 }
 
 const STATUS_OPTIONS = ["pending", "reviewing", "resolved"];
@@ -86,16 +95,17 @@ export default function AdminReportsPage() {
       {/* Sidebar */}
       <aside style={{ width: "220px", background: "#0A1628", borderRight: "1px solid #1E293B", padding: "1.5rem 0", flexShrink: 0 }}>
         <div style={{ padding: "0 1.25rem 1.5rem", borderBottom: "1px solid #1E293B" }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>Durham HRC</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: "0.95rem", color: "#F1F5F9", fontWeight: 700 }}>Speak Equal</div>
           <div style={{ fontSize: "0.72rem", color: "#64748B", marginTop: "0.2rem" }}>Admin Portal</div>
         </div>
         <nav style={{ padding: "1rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
           {[
-            { href: "/admin",              icon: "", label: "Dashboard"     },
-            { href: "/admin/reports",      icon: "", label: "Reports",  active: true },
-            { href: "/admin/appointments", icon: "", label: "Appointments" },
-            { href: "/admin/slots",        icon: "", label: "Time Slots"   },
-          ].map(({ href, icon, label, active }) => (
+            { href: "/admin",              label: "Dashboard",    active: false },
+            { href: "/admin/reports",      label: "Reports",      active: true  },
+            { href: "/admin/appointments", label: "Appointments", active: false },
+            { href: "/admin/slots",        label: "Time Slots",   active: false },
+            { href: "/admin/users",        label: "Users",        active: false },
+          ].map(({ href, label, active }) => (
             <Link key={href} href={href} style={{
               display: "flex", alignItems: "center", gap: "0.6rem",
               padding: "0.55rem 0.75rem", borderRadius: "8px",
@@ -103,7 +113,7 @@ export default function AdminReportsPage() {
               background: active ? "#1E293B" : "transparent",
               textDecoration: "none", fontSize: "0.875rem",
             }}>
-              <span>{icon}</span> {label}
+              {label}
             </Link>
           ))}
         </nav>
@@ -192,6 +202,49 @@ export default function AdminReportsPage() {
                   {/* Expanded detail */}
                   {isExpanded && (
                     <div style={{ padding: "1.25rem", borderTop: "1px solid #334155", background: "#0F172A" }}>
+
+                      {/* Category + protected class row */}
+                      <div style={{ display: "flex", gap: "1.5rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+                        {r.category && (
+                          <div>
+                            <p style={{ fontFamily: "var(--font-body)", fontSize: "0.72rem", color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.2rem" }}>Category</p>
+                            <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem", textTransform: "capitalize" }}>{r.category.replace(/_/g, " ")}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.72rem", color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.2rem" }}>Protected Class</p>
+                          <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{TYPE_LABELS[r.discriminationType] ?? r.discriminationType}</p>
+                        </div>
+                      </div>
+
+                      {/* Complainant info */}
+                      {(r.firstName || r.phone || r.address) && (
+                        <div style={{ marginBottom: "1rem" }}>
+                          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.72rem", color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.35rem" }}>Complainant Contact</p>
+                          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+                            {(r.firstName || r.lastName) && (
+                              <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{[r.firstName, r.lastName].filter(Boolean).join(" ")}</p>
+                            )}
+                            {r.phone && <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{r.phone}</p>}
+                            {r.address && (
+                              <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{r.address}{r.zipCode ? `, ${r.zipCode}` : ""}</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Respondent info */}
+                      {(r.respondentName || r.respondentAddress || r.respondentPhone) && (
+                        <div style={{ marginBottom: "1rem" }}>
+                          <p style={{ fontFamily: "var(--font-body)", fontSize: "0.72rem", color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.35rem" }}>Respondent</p>
+                          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+                            {r.respondentName    && <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{r.respondentName}</p>}
+                            {r.respondentPhone   && <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{r.respondentPhone}</p>}
+                            {r.respondentAddress && <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.825rem" }}>{r.respondentAddress}</p>}
+                          </div>
+                        </div>
+                      )}
+
                       <p style={{ fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>Description</p>
                       <p style={{ fontFamily: "var(--font-body)", color: "#CBD5E1", fontSize: "0.875rem", lineHeight: 1.7, marginBottom: "1rem" }}>
                         {r.description}
@@ -203,7 +256,7 @@ export default function AdminReportsPage() {
                           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                             {r.attachments.map(a => (
                               <a key={a.id} href={a.fileUrl} target="_blank" rel="noopener noreferrer" style={{ background: "#1E293B", color: "#60A5FA", fontSize: "0.78rem", padding: "0.25rem 0.65rem", borderRadius: "999px", textDecoration: "none", fontFamily: "var(--font-body)", border: "1px solid #334155" }}>
-                                📎 {a.fileName}
+                                {a.fileName}
                               </a>
                             ))}
                           </div>

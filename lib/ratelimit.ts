@@ -1,11 +1,22 @@
 // ─────────────────────────────────────────────────────────────
 // Sliding-window in-memory rate limiter
 // No external dependencies required.
+//
+// NOTE: This store lives in Node.js process memory. On serverless
+// platforms (Vercel, AWS Lambda) each function instance has isolated
+// memory, so limits are per-instance rather than globally enforced.
+// For production hardening replace this store with a shared Redis /
+// Upstash instance — the checkRateLimit signature stays the same.
 // ─────────────────────────────────────────────────────────────
 
 const WINDOW_MS  = 60_000; // 60-second rolling window
-const AUTH_LIMIT = 15;     // requests per window for authenticated users
-const ANON_LIMIT = 8;      // requests per window for anonymous (IP-keyed) users
+const AUTH_LIMIT = 15;     // requests per window for authenticated chat users
+const ANON_LIMIT = 8;      // requests per window for anonymous chat users
+
+// Auth-endpoint limits — tighter to resist brute-force and email flooding
+const LOGIN_LIMIT         = 10; // login attempts per IP per window
+const REGISTER_LIMIT      = 5;  // registrations per IP per window
+const PASSWORD_RESET_LIMIT = 5; // forgot/reset requests per IP per window
 
 // Map<rateLimitKey, timestamp[]>
 const store = new Map<string, number[]>();
@@ -29,28 +40,41 @@ export type RateLimitResult =
   | { allowed: true }
   | { allowed: false; retryAfter: number }; // retryAfter in whole seconds
 
-/**
- * Check and record a request against the sliding-window rate limit.
- *
- * @param key    - Unique identifier: userId for authenticated users, IP for anonymous
- * @param isAnon - Whether the caller is unauthenticated (applies the stricter limit)
- */
-export function checkRateLimit(key: string, isAnon: boolean): RateLimitResult {
-  const limit       = isAnon ? ANON_LIMIT : AUTH_LIMIT;
+function check(key: string, limit: number): RateLimitResult {
   const now         = Date.now();
   const windowStart = now - WINDOW_MS;
-
-  // Prune timestamps that have fallen outside the current window
-  const timestamps = (store.get(key) ?? []).filter(t => t > windowStart);
+  const timestamps  = (store.get(key) ?? []).filter(t => t > windowStart);
 
   if (timestamps.length >= limit) {
-    // The oldest timestamp in the window tells us when the next slot opens up
     const retryAfter = Math.ceil((timestamps[0] + WINDOW_MS - now) / 1000);
     return { allowed: false, retryAfter };
   }
 
-  // Record this request and persist
   timestamps.push(now);
   store.set(key, timestamps);
   return { allowed: true };
+}
+
+/**
+ * Chat endpoint — authenticated users get a higher limit than anonymous.
+ * @param key    - userId for authenticated users, IP for anonymous
+ * @param isAnon - Whether the caller is unauthenticated
+ */
+export function checkRateLimit(key: string, isAnon: boolean): RateLimitResult {
+  return check(key, isAnon ? ANON_LIMIT : AUTH_LIMIT);
+}
+
+/** Login endpoint — keyed by IP to resist password brute-force. */
+export function checkLoginRateLimit(ip: string): RateLimitResult {
+  return check(`login:${ip}`, LOGIN_LIMIT);
+}
+
+/** Registration endpoint — keyed by IP to resist bulk account creation. */
+export function checkRegisterRateLimit(ip: string): RateLimitResult {
+  return check(`register:${ip}`, REGISTER_LIMIT);
+}
+
+/** Forgot-password / reset-password — keyed by IP to resist email flooding. */
+export function checkPasswordResetRateLimit(ip: string): RateLimitResult {
+  return check(`pwreset:${ip}`, PASSWORD_RESET_LIMIT);
 }

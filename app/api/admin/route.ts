@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendReportStatusEmail, sendAppointmentStatusEmail } from "@/lib/email";
 
 function requireAdmin(role: string | undefined) {
   return role === "admin";
@@ -51,17 +52,25 @@ export async function PATCH(req: Request) {
 
   if (type === "report") {
     const updated = await prisma.report.update({
-      where: { id },
-      data: { status }, // "pending" | "reviewing" | "resolved"
+      where:   { id },
+      data:    { status },
+      include: { user: { select: { email: true } } },
     });
+    if (updated.user?.email) {
+      sendReportStatusEmail(updated.user.email, id, status).catch(console.error);
+    }
     return NextResponse.json(updated);
   }
 
   if (type === "appointment") {
     const updated = await prisma.appointment.update({
-      where: { id },
-      data: { status }, // "scheduled" | "completed" | "cancelled"
+      where:   { id },
+      data:    { status },
+      include: { user: { select: { email: true } }, slot: true },
     });
+    if (updated.user?.email) {
+      sendAppointmentStatusEmail(updated.user.email, updated.slot.startTime, status).catch(console.error);
+    }
     return NextResponse.json(updated);
   }
 

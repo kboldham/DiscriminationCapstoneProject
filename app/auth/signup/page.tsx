@@ -12,7 +12,7 @@ export default function SignUpPage() {
   const [showPw, setShowPw]     = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
@@ -92,8 +92,9 @@ export default function SignUpPage() {
             <input
               type="text"
               required
+              maxLength={100}
               className="form-input"
-              placeholder="First and last name"
+              placeholder="Your full name"
               value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
             />

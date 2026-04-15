@@ -161,7 +161,7 @@ function AdminReportsContent() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.25rem", flexWrap: "wrap" }}>
                         <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, color: "#CBD5E1", fontSize: "0.9rem" }}>
-                          {r.user.name ?? r.user.email}
+                          {r.user.email}
                         </p>
                         <span style={{ background: r.source === "ai" ? "#1E3A5F" : "#1A3A2A", color: r.source === "ai" ? "#60A5FA" : "#34D399", fontSize: "0.7rem", fontWeight: 700, padding: "0.1rem 0.5rem", borderRadius: "999px" }}>
                           {r.source}

@@ -25,12 +25,12 @@ export default async function AdminDashboard() {
     prisma.report.findMany({
       orderBy: { createdAt: "desc" },
       take:    6,
-      include: { user: { select: { name: true, email: true } } },
+      include: { user: { select: { email: true } } },
     }),
     prisma.appointment.findMany({
       orderBy: { createdAt: "desc" },
       take:    5,
-      include: { user: { select: { name: true, email: true } }, slot: true },
+      include: { user: { select: { email: true } }, slot: true },
     }),
   ]);
 
@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
                     const sc = STATUS_COLORS[r.status] ?? { bg: "#334155", color: "#94A3B8" };
                     return (
                       <tr key={r.id} style={{ borderBottom: "1px solid #1E293B" }}>
-                        <td style={{ padding: "0.75rem", color: "#CBD5E1" }}>{r.user?.name ?? r.user?.email ?? "Anonymous"}</td>
+                        <td style={{ padding: "0.75rem", color: "#CBD5E1" }}>{r.user?.email ?? "Anonymous"}</td>
                         <td style={{ padding: "0.75rem", color: "#CBD5E1", textTransform: "capitalize" }}>{r.discriminationType.replace(/_/g, " ")}</td>
                         <td style={{ padding: "0.75rem", color: "#64748B", whiteSpace: "nowrap" }}>{new Date(r.incidentDate).toLocaleDateString()}</td>
                         <td style={{ padding: "0.75rem" }}>
@@ -163,7 +163,7 @@ export default async function AdminDashboard() {
                 return (
                   <div key={a.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.875rem 1rem", background: "#0F172A", borderRadius: "10px", flexWrap: "wrap", gap: "0.5rem" }}>
                     <div>
-                      <p style={{ color: "#CBD5E1", fontWeight: 600, fontSize: "0.875rem" }}>{a.user.name ?? a.user.email}</p>
+                      <p style={{ color: "#CBD5E1", fontWeight: 600, fontSize: "0.875rem" }}>{a.user.email}</p>
                       <p style={{ color: "#64748B", fontSize: "0.78rem" }}>
                         {new Date(a.slot.startTime).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true })} · via {a.source}
                       </p>

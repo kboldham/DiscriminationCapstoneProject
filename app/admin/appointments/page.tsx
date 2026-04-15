@@ -142,7 +142,7 @@ export default function AdminAppointmentsPage() {
                   return (
                     <tr key={a.id} style={{ borderBottom: "1px solid #1E293B" }}>
                       <td style={{ padding: "0.875rem 1rem" }}>
-                        <p style={{ color: "#CBD5E1", fontWeight: 600, fontSize: "0.875rem" }}>{a.user.name ?? "Anonymous"}</p>
+                        <p style={{ color: "#CBD5E1", fontWeight: 600, fontSize: "0.875rem" }}>{a.user.email ?? "Anonymous"}</p>
                         <p style={{ color: "#64748B", fontSize: "0.75rem" }}>{a.user.email}</p>
                       </td>
                       <td style={{ padding: "0.875rem 1rem", color: "#CBD5E1", whiteSpace: "nowrap" }}>

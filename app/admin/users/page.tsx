@@ -179,7 +179,7 @@ export default function AdminUsersPage() {
                   return (
                     <tr key={u.id} style={{ borderBottom: "1px solid #1E293B" }}>
                       <td style={{ padding: "0.875rem 1rem" }}>
-                        <p style={{ color: "#CBD5E1", fontWeight: 600 }}>{u.name ?? "No name"}</p>
+                        <p style={{ color: "#CBD5E1", fontWeight: 600 }}>{u.email}</p>
                         <p style={{ color: "#64748B", fontSize: "0.75rem" }}>{u.email}</p>
                       </td>
                       <td style={{ padding: "0.875rem 1rem" }}>

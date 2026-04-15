@@ -18,9 +18,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { name, email, password } = body;
+    const { email, password } = body;
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -35,8 +35,8 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 12);
 
-    const user = await prisma.user.create({
-      data: { name, email, hashedPassword, role: "user" },
+    await prisma.user.create({
+      data: { email, hashedPassword, role: "user" },
     });
 
     return NextResponse.json({ message: "Account created successfully" }, { status: 201 });

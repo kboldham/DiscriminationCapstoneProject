@@ -68,7 +68,6 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
           // Include role so chat API can gate admin-only report review features
           role: user.role ?? "user",
         };

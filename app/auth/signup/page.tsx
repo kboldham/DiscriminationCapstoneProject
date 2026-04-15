@@ -6,10 +6,10 @@ import Link from "next/link";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [form, setForm]         = useState({ name: "", email: "", password: "", confirm: "" });
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [showPw, setShowPw]     = useState(false);
+  const [form, setForm]               = useState({ email: "", password: "", confirm: "" });
+  const [error, setError]             = useState("");
+  const [loading, setLoading]         = useState(false);
+  const [showPw, setShowPw]           = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -30,7 +30,7 @@ export default function SignUpPage() {
     const res = await fetch("/api/auth/register", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ name: form.name, email: form.email, password: form.password }),
+      body:    JSON.stringify({ email: form.email, password: form.password }),
     });
 
     if (!res.ok) {
@@ -85,26 +85,13 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div>
-            <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>
-              Full Name
-            </label>
-            <input
-              type="text"
-              required
-              maxLength={100}
-              className="form-input"
-              placeholder="Your full name"
-              value={form.name}
-              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-            />
-          </div>
 
           <div>
             <label style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.4rem" }}>Email</label>
             <input
               type="email"
               required
+              maxLength={254}
               className="form-input"
               placeholder="you@example.com"
               value={form.email}
@@ -127,19 +114,7 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowPw(v => !v)}
-                style={{
-                  position:   "absolute",
-                  right:      "0.75rem",
-                  top:        "50%",
-                  transform:  "translateY(-50%)",
-                  background: "none",
-                  border:     "none",
-                  cursor:     "pointer",
-                  color:      "var(--color-text-muted)",
-                  display:    "flex",
-                  alignItems: "center",
-                  padding:    0,
-                }}
+                style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-muted)", display: "flex", alignItems: "center", padding: 0 }}
                 aria-label={showPw ? "Hide password" : "Show password"}
               >
                 {eyeIcon(showPw)}
@@ -165,19 +140,7 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(v => !v)}
-                style={{
-                  position:   "absolute",
-                  right:      "0.75rem",
-                  top:        "50%",
-                  transform:  "translateY(-50%)",
-                  background: "none",
-                  border:     "none",
-                  cursor:     "pointer",
-                  color:      "var(--color-text-muted)",
-                  display:    "flex",
-                  alignItems: "center",
-                  padding:    0,
-                }}
+                style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--color-text-muted)", display: "flex", alignItems: "center", padding: 0 }}
                 aria-label={showConfirm ? "Hide password" : "Show password"}
               >
                 {eyeIcon(showConfirm)}

@@ -4,14 +4,16 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // GET: fetch notes for a report the user owns
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { id } = await params;
+
   const report = await prisma.report.findUnique({
-    where:  { id: params.id },
+    where:  { id },
     select: { userId: true },
   });
 
@@ -20,7 +22,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 
   const notes = await prisma.reportNote.findMany({
-    where:   { reportId: params.id },
+    where:   { reportId: id },
     orderBy: { createdAt: "asc" },
   });
 
@@ -28,14 +30,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // POST: add a note to a report the user owns
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { id } = await params;
+
   const report = await prisma.report.findUnique({
-    where:  { id: params.id },
+    where:  { id },
     select: { userId: true },
   });
 
@@ -49,7 +53,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   }
 
   const note = await prisma.reportNote.create({
-    data: { reportId: params.id, content: content.trim() },
+    data: { reportId: id, content: content.trim() },
   });
 
   return NextResponse.json(note);

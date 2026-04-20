@@ -38,7 +38,7 @@ export default function AboutPage() {
           <div className="card" style={{ marginBottom: "2rem" }}>
             <span className="section-label" style={{ display: "block", marginBottom: "0.75rem" }}>The Organization</span>
             <h2 style={{ fontFamily: "var(--font-heading)", fontSize: "1.6rem", marginBottom: "1rem" }}>
-              Durham Committee on the Affairs of Black People, Inc (DCABP, Inc.)
+              Durham Committee on the Affairs of Black People, Inc
             </h2>
             <p style={{ fontFamily: "var(--font-body)", color: "var(--color-text-secondary)", lineHeight: 1.75, marginBottom: "1rem" }}>
               Durham Committee on the Affairs of Black People Inc. (DCABP Inc.) is a 501(c)(3) nonprofit community-based organization established in 2014. DCABP Inc. has stood at the forefront to champion Social Justice and Racial Equity (SJ/RE) since its inception. DCABP Inc. initiatives prioritize focus areas in Civic, Economic, Health, Housing, and Youth/Education. They are supported by dedicated staff, college student interns, and volunteers such as ourselves.  
